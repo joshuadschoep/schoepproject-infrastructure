@@ -5,7 +5,9 @@
     "Bucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": "${AWS::StackName}-${AWS::AcountId}"
+        "BucketName": {
+          "Fn::Sub": "${AWS::StackName}-${AWS::AcountId}"
+        }
       }
     }
   }
