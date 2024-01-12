@@ -5,7 +5,7 @@
     "Bucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": "${AWS::StackName}-${AWS::AcountId}-${AWS::Region}"
+        "BucketName": "${AWS::StackName}-${AWS::AcountId}"
       }
     }
   }
