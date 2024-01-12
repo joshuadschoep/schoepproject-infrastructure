@@ -1,0 +1,12 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Infrastructure Template for cf.schoepproject.com",
+  "Resources": {
+    "Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "${AWS::StackName}-${AWS::AcountId}-${AWS::Region}"
+      }
+    }
+  }
+}
