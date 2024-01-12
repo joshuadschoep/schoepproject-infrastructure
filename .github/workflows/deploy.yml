@@ -18,10 +18,12 @@ jobs:
       - name: Configure S3 Upload Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::145724753995:role/schoepproject-infrastructure-github-action-role
-          role-session-name: Github-Actions-Upload-CloudFormation-Template
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: ${{ secrets.AWS_UPLOAD_SESSION_NAME }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Upload Template to S3
-        run: bash ./.github/scripts/upload.sh
+        run: bash ../.github/scripts/upload.sh
+        working-directory: template
   deploy:
     runs-on: ubuntu-latest
     needs: upload
@@ -32,8 +34,9 @@ jobs:
       - name: Configure CloudFormation Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::145724753995:role/schoepproject-infrastructure-github-action-role
-          role-session-name: Github-Actions-Modify-Stack
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Create CloudFormation Change
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
