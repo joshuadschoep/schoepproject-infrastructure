@@ -41,5 +41,5 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: ${{ secrets.AWS_STACK_NAME }}
-          template: ${{ secrets.AWS_S3_URL }}/${{ secrets.AWS_TEMPLATE_FILENAME }}
+          template: ${{ secrets.AWS_S3_URL }}/${{ secrets.AWS_TEMPLATE_FILE }}
           no-fail-on-empty-changeset: "1"
