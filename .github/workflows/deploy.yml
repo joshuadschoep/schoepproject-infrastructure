@@ -42,4 +42,5 @@ jobs:
         with:
           name: ${{ secrets.AWS_STACK_NAME }}
           template: ${{ secrets.TEMPLATE_URL }}
+          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
