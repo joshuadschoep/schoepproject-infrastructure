@@ -2,7 +2,18 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Infrastructure Template for cf.schoepproject.com",
   "Resources": {
-    "Bucket": {
+    "Certificate": {
+      "Type": "AWS::CertificateManager::Certificate",
+      "Properties": {
+        "DomainName": "cf.schoepproject.com",
+        "DomainValidationOption": {
+          "DomainName": "cf.schoepproject.com",
+          "HostedZoneId": "ZOZJO7VU8BJZE",
+          "ValidationDomain": "schoepproject.com"
+        }
+      }
+    },
+    "StaticFileBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": {
