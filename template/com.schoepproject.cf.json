@@ -9,7 +9,7 @@
         "DomainValidationOption": {
           "DomainName": "cf.schoepproject.com",
           "HostedZoneId": "ZOZJO7VU8BJZE",
-          "ValidationDomain": "schoepproject.com"
+          "ValidationDomains": "schoepproject.com"
         }
       }
     },
