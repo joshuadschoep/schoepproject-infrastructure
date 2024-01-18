@@ -11,7 +11,8 @@
             "DomainName": "cf.schoepproject.com",
             "HostedZoneId": "ZOZJO7VU8BJZE"
           }
-        ]
+        ],
+        "ValidationMethod": "DNS"
       }
     },
     "StaticFileBucket": {
