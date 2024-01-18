@@ -6,10 +6,10 @@
       "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
         "DomainName": "cf.schoepproject.com",
-        "DomainValidationOption": {
+        "DomainValidationOptions": {
           "DomainName": "cf.schoepproject.com",
           "HostedZoneId": "ZOZJO7VU8BJZE",
-          "ValidationDomains": "schoepproject.com"
+          "ValidationDomain": "schoepproject.com"
         }
       }
     },
