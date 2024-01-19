@@ -54,19 +54,16 @@
               "Fn::Sub": "${DomainName}"
             }
           ],
-          "CacheBehaviors": [
-            {
-              "AllowedMethods": [
-                "GET",
-                "HEAD"
-              ],
-              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-              "Compress": true,
-              "PathPattern": "*",
-              "TargetOriginId": "S3BucketOrigin",
-              "ViewerProtocolPolicy": "redirect-to-https"
-            }
-          ],
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [
+              "GET",
+              "HEAD"
+            ],
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "Compress": true,
+            "TargetOriginId": "S3BucketOrigin",
+            "ViewerProtocolPolicy": "redirect-to-https"
+          },
           "DefaultRootObject": "index.html",
           "Enabled": true,
           "HttpVersion": "http2and3",
@@ -74,7 +71,7 @@
           "Origins": [
             {
               "DomainName": {
-                "GetAtt": [
+                "Fn::GetAtt": [
                   "StaticFileBucket",
                   "DomainName"
                 ]
@@ -92,16 +89,11 @@
             "AcmCertificateArn": {
               "Ref": "Certificate"
             },
-            "CloudFrontDefaultCertificate": false,
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only"
           }
         }
-      },
-      "DependsOn": [
-        "Certificate",
-        "StaticFileBucket"
-      ]
+      }
     }
   }
 }
