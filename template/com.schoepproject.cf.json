@@ -1,14 +1,28 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Infrastructure Template for cf.schoepproject.com",
+  "Parameters": {
+    "DomainName": {
+      "Type": "String",
+      "Default": "cf.schoepproject.com",
+      "AllowedValues": [
+        "cf.schoepproject.com"
+      ],
+      "Description": "Domain or subdomain for this front-end stack. Default and only allowed value is cf.schoepproject.com"
+    }
+  },
   "Resources": {
     "Certificate": {
       "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
-        "DomainName": "cf.schoepproject.com",
+        "DomainName": {
+          "Fn::Sub": "${DomainName}"
+        },
         "DomainValidationOptions": [
           {
-            "DomainName": "cf.schoepproject.com",
+            "DomainName": {
+              "Fn::Sub": "${DomainName}"
+            },
             "HostedZoneId": "ZOZJO7VU8BJZE"
           }
         ],
@@ -22,6 +36,72 @@
           "Fn::Sub": "${AWS::StackName}-${AWS::AccountId}"
         }
       }
+    },
+    "StaticBucketOriginAccessIdentity": {
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+          "Comment": "Allows cf.schoepproject.com CDN to access all S3 objects"
+        }
+      }
+    },
+    "CDN": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
+            {
+              "Fn::Sub": "${DomainName}"
+            }
+          ],
+          "CacheBehaviors": [
+            {
+              "AllowedMethods": [
+                "GET",
+                "HEAD"
+              ],
+              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+              "Compress": true,
+              "PathPattern": "*",
+              "TargetOriginId": "S3BucketOrigin",
+              "ViewerProtocolPolicy": "redirect-to-https"
+            }
+          ],
+          "DefaultRootObject": "index.html",
+          "Enabled": true,
+          "HttpVersion": "http2and3",
+          "IPV6Enabled": true,
+          "Origins": [
+            {
+              "DomainName": {
+                "GetAtt": [
+                  "StaticFileBucket",
+                  "DomainName"
+                ]
+              },
+              "Id": "S3BucketOrigin",
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Sub": "origin-access-identity/cloudfront/${StaticBucketOriginAccessIdentity}"
+                }
+              }
+            }
+          ],
+          "PriceClass": "PriceClass_100",
+          "ViewerCertificate": {
+            "AcmCertificateArn": {
+              "Ref": "Certificate"
+            },
+            "CloudFrontDefaultCertificate": false,
+            "MinimumProtocolVersion": "TLSv1.2_2021",
+            "SslSupportMethod": "sni-only"
+          }
+        }
+      },
+      "DependsOn": [
+        "Certificate",
+        "StaticFileBucket"
+      ]
     }
   }
 }
