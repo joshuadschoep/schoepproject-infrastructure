@@ -1,24 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Infrastructure Template for cf2.schoepproject.com",
-  "Parameters": {
-    "DomainName": {
-      "Type": "String",
-      "Default": "cf.schoepproject.com",
-      "AllowedValues": [
-        "cf.schoepproject.com"
-      ],
-      "Description": "Domain or subdomain for this front-end stack. Default and only allowed value is cf.schoepproject.com"
-    },
-    "HostedZoneId": {
-      "Type": "String",
-      "Default": "ZOZJO7VU8BJZE",
-      "AllowedValues": [
-        "ZOZJO7VU8BJZE"
-      ],
-      "Description": "ID of the hosted zone for the Certificate DNS idea "
-    }
-  },
   "Resources": {
     "FrontendStack": {
       "Type": "AWS::CloudFormation::Stack",
