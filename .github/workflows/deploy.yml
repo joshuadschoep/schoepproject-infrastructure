@@ -49,7 +49,7 @@ jobs:
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: com-schoepproject-cf2
-        uses: aws-actions-aws-cloudformation-github-deploy@master
+        uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-cf2
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.cf2.json
