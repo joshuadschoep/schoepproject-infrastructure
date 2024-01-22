@@ -9,6 +9,14 @@
         "cf.schoepproject.com"
       ],
       "Description": "Domain or subdomain for this front-end stack. Default and only allowed value is cf.schoepproject.com"
+    },
+    "HostedZoneId": {
+      "Type": "String",
+      "Default": "ZOZJO7VU8BJZE",
+      "AllowedValues": [
+        "ZOZJO7VU8BJZE"
+      ],
+      "Description": "ID of the hosted zone for the Certificate DNS idea "
     }
   },
   "Resources": {
@@ -23,7 +31,9 @@
             "DomainName": {
               "Fn::Sub": "${DomainName}"
             },
-            "HostedZoneId": "ZOZJO7VU8BJZE"
+            "HostedZoneId": {
+              "Fn::Sub": "${HostedZoneId}"
+            }
           }
         ],
         "ValidationMethod": "DNS"
@@ -93,6 +103,30 @@
             "SslSupportMethod": "sni-only"
           }
         }
+      }
+    },
+    "DNSRecord": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "CDN",
+              "DomainName"
+            ]
+          },
+          "HostedZoneId": {
+            "Ref": "HostedZoneId"
+          }
+        },
+        "Comment": "cf.schoepproject.com routing configuration. Created by CloudFormation.",
+        "HostedZoneId": {
+          "Ref": "HostedZoneId"
+        },
+        "Name": {
+          "Ref": "DomainName"
+        },
+        "Type": "A"
       }
     }
   }
