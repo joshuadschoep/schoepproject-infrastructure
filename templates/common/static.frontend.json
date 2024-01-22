@@ -45,7 +45,7 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": {
-          "Fn::Sub": "${AWS::StackName}-${AWS::AccountId}"
+          "Fn::Sub": "${BucketName}"
         }
       }
     },
