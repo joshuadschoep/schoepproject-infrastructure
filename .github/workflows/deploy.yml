@@ -34,7 +34,7 @@ jobs:
           role-session-name: ${{ secrets.AWS_UPLOAD_SESSION_NAME }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Upload Template to S3
-        run: bash ../.github/scripts/upload.sh
+        run: bash ./.github/scripts/upload.sh
   deploy:
     runs-on: ubuntu-latest
     needs: upload
