@@ -47,35 +47,17 @@
         }
       }
     },
-    "StaticFileBucketPolicy": {
-      "Type": "AWS::S3::BucketPolicy",
+    "CDNOriginAccessControl": {
+      "Type": "AWS::CloudFront::OriginAccessControl",
       "Properties": {
-        "Bucket": {
-          "Ref": "StaticFileBucket"
-        },
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Id": "PolicyForCloudFrontPrivateContent",
-          "Statement": [
-            {
-              "Sid": "AllowCloudFrontServicePrincipal",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cloudfront.amazonaws.com"
-              },
-              "Action": "s3:GetObject",
-              "Resource": {
-                "Fn::Sub": "${StaticFileBucket}/*"
-              },
-              "Condition": {
-                "StringEquals": {
-                  "AWS:SourceArn": {
-                    "Ref": "CDN"
-                  }
-                }
-              }
-            }
-          ]
+        "OriginAccessControlConfig": {
+          "Description": "Default Origin Access Control",
+          "Name": {
+            "Ref": "AWS::StackName"
+          },
+          "OriginAccessControlOriginType": "s3",
+          "SigningBehavior": "always",
+          "SigningProtocol": "sigv4"
         }
       }
     },
@@ -133,17 +115,35 @@
         }
       }
     },
-    "CDNOriginAccessControl": {
-      "Type": "AWS::CloudFront::OriginAccessControl",
+    "StaticFileBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
       "Properties": {
-        "OriginAccessControlConfig": {
-          "Description": "Default Origin Access Control",
-          "Name": {
-            "Ref": "AWS::StackName"
-          },
-          "OriginAccessControlOriginType": "s3",
-          "SigningBehavior": "always",
-          "SigningProtocol": "sigv4"
+        "Bucket": {
+          "Ref": "StaticFileBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Id": "PolicyForCloudFrontPrivateContent",
+          "Statement": [
+            {
+              "Sid": "AllowCloudFrontServicePrincipal",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+              },
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Sub": "${StaticFileBucket}/*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceArn": {
+                    "Fn::Sub": "arn:aws:cloudfront::${AccountId}:distribution/${CDN}"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     },
