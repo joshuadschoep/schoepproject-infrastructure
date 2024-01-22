@@ -7,6 +7,11 @@
       "AllowedPattern": "([a-zA-Z0-9]+\\.)+schoepproject.com",
       "Description": "Domain or subdomain for this front-end stack."
     },
+    "BucketName": {
+      "Type": "String",
+      "AllowedPattern": "^[a-zA-Z0-9].{0,61}[a-zA-Z0-9]$",
+      "Description": "Name for the static file bucket"
+    },
     "HostedZoneId": {
       "Type": "String",
       "Default": "ZOZJO7VU8BJZE",
