@@ -138,7 +138,7 @@
               "Condition": {
                 "StringEquals": {
                   "AWS:SourceArn": {
-                    "Fn::Sub": "arn:aws:cloudfront::${AccountId}:distribution/${CDN}"
+                    "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CDN}"
                   }
                 }
               }
