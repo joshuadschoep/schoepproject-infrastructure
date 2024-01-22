@@ -5,7 +5,7 @@
     "FrontendStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/templates/common/static.frontend.json",
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/static.frontend.json",
         "Parameters": {
           "DomainName": "cf2.schoepproject.com"
         }
