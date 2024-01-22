@@ -4,7 +4,7 @@
     "Parameters": {
       "DomainName": {
         "Type": "String",
-        "AllowedValues": [
+        "AllowedPattern": [
           "([a-zA-Z0-9]+\\.)+schoepproject.com"
         ],
         "Description": "Domain or subdomain for this front-end stack."
