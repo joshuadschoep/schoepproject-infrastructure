@@ -14,7 +14,7 @@ jobs:
       - name: Lint
         run: |
           cfn-lint --version
-          cfn-lint template/*.json
+          cfn-lint templates/**/*.json
   upload:
     runs-on: ubuntu-latest
     needs: lint
@@ -35,7 +35,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Upload Template to S3
         run: bash ../.github/scripts/upload.sh
-        working-directory: template
   deploy:
     runs-on: ubuntu-latest
     needs: upload
@@ -49,10 +48,10 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Create CloudFormation Change
-        uses: aws-actions/aws-cloudformation-github-deploy@master
+      - name: com-schoepproject-cf2
+        uses: aws-actions-aws-cloudformation-github-deploy@master
         with:
-          name: ${{ secrets.AWS_STACK_NAME }}
-          template: ${{ secrets.TEMPLATE_URL }}
+          name: com-schoepproject-cf2
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.cf2.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
