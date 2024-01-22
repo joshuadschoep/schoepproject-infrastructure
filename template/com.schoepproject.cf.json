@@ -47,11 +47,35 @@
         }
       }
     },
-    "StaticBucketOriginAccessIdentity": {
-      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    "StaticFileBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
       "Properties": {
-        "CloudFrontOriginAccessIdentityConfig": {
-          "Comment": "Allows cf.schoepproject.com CDN to access all S3 objects"
+        "Bucket": {
+          "Ref": "StaticFileBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Id": "PolicyForCloudFrontPrivateContent",
+          "Statement": [
+            {
+              "Sid": "AllowCloudFrontServicePrincipal",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+              },
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Sub": "${StaticFileBucket}/*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceArn": {
+                    "Ref": "CDN"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -88,9 +112,13 @@
               },
               "Id": "S3BucketOrigin",
               "S3OriginConfig": {
-                "OriginAccessIdentity": {
-                  "Fn::Sub": "origin-access-identity/cloudfront/${StaticBucketOriginAccessIdentity}"
-                }
+                "OriginAccessIdentity": ""
+              },
+              "OriginAccessControlId": {
+                "Fn::GetAtt": [
+                  "CDNOriginAccessControl",
+                  "Id"
+                ]
               }
             }
           ],
@@ -102,6 +130,20 @@
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only"
           }
+        }
+      }
+    },
+    "CDNOriginAccessControl": {
+      "Type": "AWS::CloudFront::OriginAccessControl",
+      "Properties": {
+        "OriginAccessControlConfig": {
+          "Description": "Default Origin Access Control",
+          "Name": {
+            "Ref": "AWS::StackName"
+          },
+          "OriginAccessControlOriginType": "s3",
+          "SigningBehavior": "always",
+          "SigningProtocol": "sigv4"
         }
       }
     },
