@@ -115,9 +115,7 @@
               "DomainName"
             ]
           },
-          "HostedZoneId": {
-            "Ref": "HostedZoneId"
-          }
+          "HostedZoneId": "Z2FDTNDATAQYW2"
         },
         "Comment": "cf.schoepproject.com routing configuration. Created by CloudFormation.",
         "HostedZoneId": {
