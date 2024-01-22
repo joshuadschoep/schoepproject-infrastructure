@@ -133,7 +133,16 @@
               },
               "Action": "s3:GetObject",
               "Resource": {
-                "Fn::Sub": "${StaticFileBucket}/*"
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "StaticFileBucket"
+                    },
+                    "/*"
+                  ]
+                ]
               },
               "Condition": {
                 "StringEquals": {
