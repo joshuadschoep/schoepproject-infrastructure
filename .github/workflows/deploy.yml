@@ -48,10 +48,10 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: com-schoepproject-cf2
+      - name: com-schoepproject-vue
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
-          name: com-schoepproject-cf2
-          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.cf2.json
+          name: com-schoepproject-vue
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.vue.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
