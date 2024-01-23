@@ -55,3 +55,4 @@ jobs:
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.vue.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
