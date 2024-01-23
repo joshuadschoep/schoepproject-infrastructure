@@ -182,5 +182,15 @@
         "Type": "A"
       }
     }
+  },
+  "Outputs": {
+    "StaticFileBucketARN": {
+      "Description": "The ARN for the static bucket that is created via this stack",
+      "Value": { "Fn::GetAtt": ["StaticFileBucket", "ARN"]}
+    },
+    "CloudFrontDistributionARN": {
+      "Description": "The ARN for the cloudfront distribution that is created as part of this stack",
+      "Value": { "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CDN}" }
+    }
   }
 }

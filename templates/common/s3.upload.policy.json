@@ -1,0 +1,116 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Template for allowing Github repositories to upload to specific S3 buckets and create invalidations on CloudFront.",
+  "Parameters": {
+    "BucketARN": {
+      "Type": "String",
+      "Description": "Name of the bucket that GitHub will need access to",
+      "AllowedPattern": "arn:aws:s3:::.{1,63}"
+    },
+    "DistributionARN": {
+      "Type": "String",
+      "Description": "Name of the CloudFront Distribution that GitHub will need access to Invalidations on",
+      "AllowedPattern": "arn:aws:cloudfront::[0-9]+:distribution/.{1,256}"
+    },
+    "Repository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$"
+    },
+    "Branch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
+    }
+  },
+  "Resources": {
+    "UploadAndInvalidatePolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Policy to allow S3 uploads for CloudFormation stack ${AWS::StackName}"
+        },
+        "ManagedPolicyName": {
+          "Fn::Sub": "S3UploadAndInvalidationFor${AWS::StackName}"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowS3Upload",
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:AbortMultipartUpload",
+                "s3:ListBucket",
+                "s3:DeleteObject"
+              ],
+              "Resource": [
+                {
+                  "Ref": "BucketARN"
+                },
+                {
+                  "Fn::Sub": "${BucketARN}/*"
+                }
+              ]
+            },
+            {
+              "Sid": "AllowCloudFrontInvalidation",
+              "Effect": "Allow",
+              "Action": [
+                "cloudfront:GetInvalidation",
+                "cloudfront:CreateInvalidation"
+              ],
+              "Resource": [
+                {
+                  "Ref": "DistributionARN"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "UploadAndInvalidateRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": "arn:aws:iam::145724753995:oidc-provider/token.actions.githubusercontent.com"
+              },
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": {
+                "StringEquals": {
+                  "token.actions.githubusercontent.com:sub": {
+                    "Fn::Sub": "repo:${Repository}:ref:refs/heads/${Branch}"
+                  },
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                }
+              }
+            }
+          ]
+        },
+        "Description": "Role to allow GitHub access to S3 bucket and CF distribution",
+        "ManagedPolicyArns": [
+          {
+            "Ref": "UploadAndInvalidatePolicy"
+          }
+        ],
+        "RoleName": {
+          "Fn::Sub": "S3UploadAndInvalidationFor${AWS::StackName}"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "GitHubPrincipalledRole": {
+      "Description": "The name of the role for GitHub to assume when trying to perform CD actions",
+      "Value": { "Ref": "UploadAndInvalidateRole" }
+    }
+  }
+}
