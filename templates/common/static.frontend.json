@@ -184,13 +184,21 @@
     }
   },
   "Outputs": {
-    "StaticFileBucketARN": {
+    "BucketARN": {
       "Description": "The ARN for the static bucket that is created via this stack",
       "Value": { "Fn::GetAtt": ["StaticFileBucket", "Arn"]}
     },
-    "CloudFrontDistributionARN": {
+    "BucketName": {
+      "Description": "Name of the bucket for static website files",
+      "Value": {"Ref": "StaticFileBucket"}
+    },
+    "DistributionARN": {
       "Description": "The ARN for the cloudfront distribution that is created as part of this stack",
       "Value": { "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CDN}" }
+    },
+    "DistributionName": {
+      "Description": "Name of the CloudFront Distribution to invalidate",
+      "Value": { "Ref": "CDN"}
     }
   }
 }

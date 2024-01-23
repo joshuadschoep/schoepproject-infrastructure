@@ -2,6 +2,11 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Template for allowing Github repositories to upload to specific S3 buckets and create invalidations on CloudFront.",
   "Parameters": {
+    "RoleAndPolicyName": {
+      "Type": "String",
+      "Description": "Name for the policy and role to maintain uniqueness",
+      "AllowedPattern": ".{1,63}"
+    },
     "BucketARN": {
       "Type": "String",
       "Description": "Name of the bucket that GitHub will need access to",
@@ -31,7 +36,7 @@
           "Fn::Sub": "Policy to allow S3 uploads for CloudFormation stack ${AWS::StackName}"
         },
         "ManagedPolicyName": {
-          "Fn::Sub": "S3UploadAndInvalidationFor${AWS::StackName}"
+          "Ref": "RoleAndPolicyName"
         },
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -102,7 +107,7 @@
           }
         ],
         "RoleName": {
-          "Fn::Sub": "S3UploadAndInvalidationFor${AWS::StackName}"
+          "Ref": "RoleAndPolicyName"
         }
       }
     }

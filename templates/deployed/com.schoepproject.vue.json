@@ -30,12 +30,27 @@
       "Properties": {
         "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/s3.upload.policy.json",
         "Parameters": {
-          "BucketARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.StaticFileBucketARN"]},
-          "DistributionARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.CloudFrontDistributionARN"]},
+          "RoleAndPolicyName": "vue-schoepproject-com-cd",
+          "BucketARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.BucketARN"]},
+          "DistributionARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.DistributionARN"]},
           "Repository": {"Ref": "Repository"},
           "Branch": {"Ref": "Branch"}
         }
       }
+    }
+  },
+  "Outputs": {
+    "Bucket": {
+      "Description": "Name of the bucket to upload static website files to",
+      "Value": {"Fn::GetAtt": ["FrontendStack", "Outputs.BucketName"]}
+    },
+    "Distribution": {
+      "Description": "Name of the distribution to invalidate on update",
+      "Value": {"Fn::GetAtt": ["FrontendStack", "Outputs.DistributionName"]}
+    },
+    "GitRole": {
+      "Description": "Name of the GitHub role that can access this bucket and distribution",
+      "Value": {"Fn::GetAtt": ["CICDRoles", "Outputs.GitHubPrincipalledRole"]}
     }
   }
 }
