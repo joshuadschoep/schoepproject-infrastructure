@@ -30,8 +30,8 @@
       "Properties": {
         "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/s3.upload.policy.json",
         "Parameters": {
-          "S3BucketARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.StaticFileBucketARN"]},
-          "CloudFrontDistributionARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.CloudFrontDistributionARN"]},
+          "BucketARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.StaticFileBucketARN"]},
+          "DistributionARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.CloudFrontDistributionARN"]},
           "Repository": {"Ref": "Repository"},
           "Branch": {"Ref": "Branch"}
         }
