@@ -1,12 +1,12 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Infrastructure Template for vue.schoepproject.com",
+  "Description": "Infrastructure Template for www.schoepproject.com",
   "Parameters": {
     "Repository": {
       "Type": "String",
       "Description": "Name of the GitHub Repository that will be allowed to access resources",
       "AllowedPattern": "^joshuadschoep/.*$",
-      "Default": "joshuadschoep/vue-schoepproject-com"
+      "Default": "joshuadschoep/schoepproject-com"
     },
     "Branch": {
       "Type": "String",
@@ -20,8 +20,8 @@
       "Properties": {
         "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/static.frontend.json",
         "Parameters": {
-          "DomainName": "vue.schoepproject.com",
-          "BucketName": { "Fn::Sub": "com-schoepproject-vue-${AWS::AccountId}" }
+          "DomainName": "www.schoepproject.com",
+          "BucketName": { "Fn::Sub": "com-schoepproject-www-${AWS::AccountId}" }
         }
       }
     },
@@ -30,7 +30,7 @@
       "Properties": {
         "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/s3.upload.policy.json",
         "Parameters": {
-          "RoleAndPolicyName": "vue-schoepproject-com-cd",
+          "RoleAndPolicyName": "www-schoepproject-com-cd",
           "BucketARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.BucketARN"]},
           "DistributionARN": { "Fn::GetAtt": ["FrontendStack", "Outputs.DistributionARN"]},
           "Repository": {"Ref": "Repository"},
