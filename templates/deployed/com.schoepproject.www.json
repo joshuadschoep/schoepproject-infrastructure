@@ -48,9 +48,9 @@
       "Description": "Name of the distribution to invalidate on update",
       "Value": {"Fn::GetAtt": ["FrontendStack", "Outputs.DistributionName"]}
     },
-    "GitRole": {
+    "GitRoleArn": {
       "Description": "Name of the GitHub role that can access this bucket and distribution",
-      "Value": {"Fn::GetAtt": ["CICDRoles", "Outputs.GitHubPrincipalledRole"]}
+      "Value": {"Fn::GetAtt": ["CICDRoles", "Outputs.GitHubPrincipalledRoleArn"]}
     }
   }
 }

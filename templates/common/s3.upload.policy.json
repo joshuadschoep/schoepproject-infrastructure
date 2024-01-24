@@ -113,9 +113,9 @@
     }
   },
   "Outputs": {
-    "GitHubPrincipalledRole": {
+    "GitHubPrincipalledRoleArn": {
       "Description": "The name of the role for GitHub to assume when trying to perform CD actions",
-      "Value": { "Ref": "UploadAndInvalidateRole" }
+      "Value": { "Fn::GetAtt": ["UploadAndInvalidateRole", "Arn"] }
     }
   }
 }
