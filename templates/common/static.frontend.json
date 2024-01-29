@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Infrastructure Template for cf.schoepproject.com",
+  "Description": "Stack to be used as a resource -- creates a serverless frontend with DNS, CDN, cert, and static bucket for hosted files.",
   "Parameters": {
     "DomainName": {
       "Type": "String",
@@ -186,19 +186,30 @@
   "Outputs": {
     "BucketARN": {
       "Description": "The ARN for the static bucket that is created via this stack",
-      "Value": { "Fn::GetAtt": ["StaticFileBucket", "Arn"]}
+      "Value": {
+        "Fn::GetAtt": [
+          "StaticFileBucket",
+          "Arn"
+        ]
+      }
     },
     "BucketName": {
       "Description": "Name of the bucket for static website files",
-      "Value": {"Ref": "StaticFileBucket"}
+      "Value": {
+        "Ref": "StaticFileBucket"
+      }
     },
     "DistributionARN": {
       "Description": "The ARN for the cloudfront distribution that is created as part of this stack",
-      "Value": { "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CDN}" }
+      "Value": {
+        "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CDN}"
+      }
     },
     "DistributionName": {
       "Description": "Name of the CloudFront Distribution to invalidate",
-      "Value": { "Ref": "CDN"}
+      "Value": {
+        "Ref": "CDN"
+      }
     }
   }
 }
