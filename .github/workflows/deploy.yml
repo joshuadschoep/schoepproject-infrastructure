@@ -75,7 +75,7 @@ jobs:
                   parameter-overrides: >-
                       Repository=joshuadschoep/payout-schoepproject-com,
                       DomainName=payout.schoepproject.com,
-                      BucketNameSuffix=payout
+                      BucketNameSuffix=payout,
                       CICDRoleName=payout-schoepproject-com-cd
             - name: com-schoepproject-snowfall
               uses: aws-actions/aws-cloudformation-github-deploy@master
@@ -88,5 +88,5 @@ jobs:
                   parameter-overrides: >-
                       Repository=joshuadschoep/snowfall-schoepproject-com,
                       DomainName=snowfall.schoepproject.com,
-                      BucketNameSuffix=snowfall
+                      BucketNameSuffix=snowfall,
                       CICDRoleName=snowfall-schoepproject-com-cd
