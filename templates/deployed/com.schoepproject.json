@@ -17,7 +17,7 @@
       "Type": "String",
       "Description": "Name of the domain that this website should exist under. Default is www.schoepproject.com",
       "Default": "www.schoepproject.com",
-      "AllowedPattern": "^([a-zA-Z0-9]+\\.)+schoepproject.com)"
+      "AllowedPattern": "^([a-zA-Z0-9]+\\.)+schoepproject.com"
     },
     "BucketNameSuffix": {
       "Type": "String",
