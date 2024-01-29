@@ -52,7 +52,7 @@ jobs:
               uses: aws-actions/aws-cloudformation-github-deploy@master
               with:
                   name: com-schoepproject-www
-                  template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.www.json
+                  template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
                   role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
                   no-fail-on-empty-changeset: "1"
                   capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
