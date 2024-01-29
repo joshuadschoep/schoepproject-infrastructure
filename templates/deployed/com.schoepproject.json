@@ -1,0 +1,107 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Infrastructure Template for www.schoepproject.com",
+  "Parameters": {
+    "Repository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$",
+      "Default": "joshuadschoep/schoepproject-com"
+    },
+    "Branch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
+    },
+    "DomainName": {
+      "Type": "String",
+      "Description": "Name of the domain that this website should exist under. Default is www.schoepproject.com",
+      "Default": "www.schoepproject.com",
+      "AllowedPattern": "^([a-zA-Z0-9]+\\.)+schoepproject.com)"
+    },
+    "BucketNameSuffix": {
+      "Type": "String",
+      "Description": "All buckets will be named via domain name and account. Use this to differentiate suffixes",
+      "Default": "www"
+    },
+    "CICDRoleName": {
+      "Type": "String",
+      "Description": "Name that should be given to the CICD role and policy. Must be unique per account.",
+      "Default": "www-schoepproject-com-cd"
+    }
+  },
+  "Resources": {
+    "FrontendStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/static.frontend.json",
+        "Parameters": {
+          "DomainName": {
+            "Ref": "DomainName"
+          },
+          "BucketName": {
+            "Fn::Sub": "com-schoepproject-${BucketNameSuffix}-${AWS::AccountId}"
+          }
+        }
+      }
+    },
+    "CICDRoles": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/s3.upload.policy.json",
+        "Parameters": {
+          "RoleAndPolicyName": {
+            "Ref": "CICDRoleName"
+          },
+          "BucketARN": {
+            "Fn::GetAtt": [
+              "FrontendStack",
+              "Outputs.BucketARN"
+            ]
+          },
+          "DistributionARN": {
+            "Fn::GetAtt": [
+              "FrontendStack",
+              "Outputs.DistributionARN"
+            ]
+          },
+          "Repository": {
+            "Ref": "Repository"
+          },
+          "Branch": {
+            "Ref": "Branch"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Bucket": {
+      "Description": "Name of the bucket to upload static website files to",
+      "Value": {
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.BucketName"
+        ]
+      }
+    },
+    "Distribution": {
+      "Description": "Name of the distribution to invalidate on update",
+      "Value": {
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.DistributionName"
+        ]
+      }
+    },
+    "GitRoleArn": {
+      "Description": "Name of the GitHub role that can access this bucket and distribution",
+      "Value": {
+        "Fn::GetAtt": [
+          "CICDRoles",
+          "Outputs.GitHubPrincipalledRoleArn"
+        ]
+      }
+    }
+  }
+}

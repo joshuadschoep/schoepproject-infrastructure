@@ -1,0 +1,38 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Infrastructure Template for assets.schoepproject.com",
+  "Resources": {
+    "FrontendStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/static.frontend.json",
+        "Parameters": {
+          "DomainName": "assets.schoepproject.com",
+          "BucketName": {
+            "Fn::Sub": "com-schoepproject-assets-${AWS::AccountId}"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Bucket": {
+      "Description": "Name of the bucket to upload static website files to",
+      "Value": {
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.BucketName"
+        ]
+      }
+    },
+    "Distribution": {
+      "Description": "Name of the distribution to invalidate on update",
+      "Value": {
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.DistributionName"
+        ]
+      }
+    }
+  }
+}
