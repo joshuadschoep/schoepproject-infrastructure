@@ -127,7 +127,10 @@
         },
         "PackageType": "Zip",
         "Role": {
-          "Ref": "ExecutionRole"
+          "Fn::GetAtt": [
+            "ExecutionRole",
+            "Arn"
+          ]
         },
         "Runtime": {
           "Ref": "AuthorizeFunctionRuntime"
