@@ -2,10 +2,14 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Authorization endpoint for other Lambda services to bounce off",
   "Parameters": {
+    "KeyPairSecretName": {
+      "Type": "String",
+      "Default": "DevAccessKeyPair"
+    },
     "AuthorizeFunctionName": {
       "Type": "String",
       "AllowedPattern": "^.{1,64}$",
-      "Default": "authorizeSchoepprojectUsers"
+      "Default": "authorizeSchoepprojectDevelopmentUsers"
     },
     "AuthorizeFunctionHandler": {
       "Type": "String",
@@ -40,14 +44,11 @@
     }
   },
   "Resources": {
-    "UsersBucket": {
-      "Type": "AWS::S3::Bucket",
-      "DeletionPolicy": "Retain",
-      "UpdateReplacePolicy": "Retain",
+    "DevAccessKeyPairSecret": {
+      "Type": "AWS::SecretsManager::Secret",
       "Properties": {
-        "BucketName": {
-          "Fn::Sub": "com-schoepproject-users-${AWS::AccountId}"
-        }
+        "Description": "Private and public keys for signing dev-access cookies in authorization lambda",
+        "Name": { "Ref": "KeyPairSecretName" }
       }
     },
     "ExecutionPolicy": {
@@ -65,21 +66,14 @@
             {
               "Sid": "AllowS3Read",
               "Effect": "Allow",
-              "Action": [
-                "s3:GetObject"
+              "Action": [                
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:ListSecretVersionIds"
               ],
               "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "UsersBucket"
-                      },
-                      "/*"
-                    ]
-                  ]
+                { 
+                  "Ref": "DevAccessKeyPairSecret"
                 }
               ]
             }
@@ -162,6 +156,12 @@
     }
   },
   "Outputs": {
+    "SecretARN": {
+      "Description": "ARN of the secret created by this stack",
+      "Value": {
+        "Ref": "DevAccessKeyPairSecret"
+      }
+    },
     "FunctionName": {
       "Description": "Name of the function running authorization",
       "Value": {
