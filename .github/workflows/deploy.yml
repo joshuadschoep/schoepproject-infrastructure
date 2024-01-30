@@ -48,6 +48,14 @@ jobs:
                   role-to-assume: ${{ secrets.AWS_ROLE }}
                   role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
                   aws-region: ${{ secrets.AWS_REGION }}
+            - name: com-schoepproject-authorize
+              uses: aws-actions/aws-cloudformation-github-deploy@master
+              with:
+                  name: com-schoepproject-authorize
+                  template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.authorize.json
+                  role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+                  no-fail-on-empty-changeset: "1"
+                  capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
             - name: com-schoepproject-www
               uses: aws-actions/aws-cloudformation-github-deploy@master
               with:
