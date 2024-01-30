@@ -1,21 +1,16 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Template for allowing Github repositories to upload to specific S3 buckets and create invalidations on CloudFront.",
+  "Description": "Template for allowing Github repositories to upload and deploy to lambda",
   "Parameters": {
     "RoleAndPolicyName": {
       "Type": "String",
       "Description": "Name for the policy and role to maintain uniqueness",
       "AllowedPattern": "^.{1,63}$"
     },
-    "BucketARN": {
+    "LambdaARN": {
       "Type": "String",
-      "Description": "Name of the bucket that GitHub will need access to",
-      "AllowedPattern": "arn:aws:s3:::.{1,63}"
-    },
-    "DistributionARN": {
-      "Type": "String",
-      "Description": "Name of the CloudFront Distribution that GitHub will need access to Invalidations on",
-      "AllowedPattern": "arn:aws:cloudfront::[0-9]+:distribution/.{1,256}"
+      "Description": "Name of the Lambda function that will need upload and deploy permissions",
+      "AllowedPattern": "^arn:aws:lambda:.{1,20}:[0-9]+:function:.{1,63}$"
     },
     "Repository": {
       "Type": "String",
@@ -29,7 +24,7 @@
     }
   },
   "Resources": {
-    "UploadAndInvalidatePolicy": {
+    "UploadAndInvokePolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": {
@@ -42,34 +37,18 @@
           "Version": "2012-10-17",
           "Statement": [
             {
-              "Sid": "AllowS3Upload",
+              "Sid": "AllowLambdaUploadAndInvoke",
               "Effect": "Allow",
               "Action": [
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:AbortMultipartUpload",
-                "s3:ListBucket",
-                "s3:DeleteObject"
+                "lambda:ListFunctions",
+                "lambda:ListVersionsByFunction",
+                "lambda:GetFunction",
+                "lambda:InvokeFunction",
+                "lambda:UpdateFunctionCode"
               ],
               "Resource": [
                 {
-                  "Ref": "BucketARN"
-                },
-                {
-                  "Fn::Sub": "${BucketARN}/*"
-                }
-              ]
-            },
-            {
-              "Sid": "AllowCloudFrontInvalidation",
-              "Effect": "Allow",
-              "Action": [
-                "cloudfront:GetInvalidation",
-                "cloudfront:CreateInvalidation"
-              ],
-              "Resource": [
-                {
-                  "Ref": "DistributionARN"
+                  "Ref": "LambdaARN"
                 }
               ]
             }
@@ -77,7 +56,7 @@
         }
       }
     },
-    "UploadAndInvalidateRole": {
+    "UploadAndInvokeRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -100,10 +79,10 @@
             }
           ]
         },
-        "Description": "Role to allow GitHub access to S3 bucket and CF distribution",
+        "Description": "Role to allow GitHub access to Lambda function",
         "ManagedPolicyArns": [
           {
-            "Ref": "UploadAndInvalidatePolicy"
+            "Ref": "UploadAndInvokePolicy"
           }
         ],
         "RoleName": {
@@ -117,7 +96,7 @@
       "Description": "The name of the role for GitHub to assume when trying to perform CD actions",
       "Value": {
         "Fn::GetAtt": [
-          "UploadAndInvalidateRole",
+          "UploadAndInvokeRole",
           "Arn"
         ]
       }

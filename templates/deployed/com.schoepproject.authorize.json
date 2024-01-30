@@ -1,0 +1,192 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Authorization endpoint for other Lambda services to bounce off",
+  "Parameters": {
+    "AuthorizeFunctionName": {
+      "Type": "String",
+      "AllowedPattern": "^.{1,64}$",
+      "Default": "authorizeSchoepprojectUsers"
+    },
+    "AuthorizeFunctionHandler": {
+      "Type": "String",
+      "AllowedPattern": "^[^\\s]+$",
+      "Default": "index.handler"
+    },
+    "AuthorizeFunctionRuntime": {
+      "Type": "String",
+      "AllowedPattern": "^nodejs(18|20)\\.x$",
+      "Default": "nodejs20.x"
+    },
+    "AuthorizeExecutionRoleName": {
+      "Type": "String",
+      "AllowedPattern": "^.{1,64}$",
+      "Default": "AuthorizeSchoepprojectUsersExecutionRole"
+    },
+    "CICDRoleName": {
+      "Type": "String",
+      "Description": "Name that should be given to the CICD role and policy. Must be unique per account.",
+      "Default": "com-schoepproject-authorize-cd"
+    },
+    "Repository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$",
+      "Default": "joshuadschoep/com-schoepproject-authorize"
+    },
+    "Branch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
+    }
+  },
+  "Resources": {
+    "UsersBucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "com-schoepproject-users-${AWS::AccountId}"
+        }
+      }
+    },
+    "ExecutionPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Policy to allow ${AuthorizeFunctionName} to access S3 objects"
+        },
+        "ManagedPolicyName": {
+          "Ref": "AuthorizeExecutionRoleName"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowS3Read",
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "UsersBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "ExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Role to allow ${AuthorizeFunctionName} to access S3 objects"
+        },
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          {
+            "Ref": "ExecutionPolicy"
+          }
+        ]
+      }
+    },
+    "AuthorizeFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "export const handler = () => return \"Hello Lambda\""
+        },
+        "Description": "Function that receives oauth2 access tokens and authorized or denies them.",
+        "FunctionName": {
+          "Ref": "AuthorizeFunctionName"
+        },
+        "Handler": {
+          "Ref": "AuthorizeFunctionHandler"
+        },
+        "PackageType": "Zip",
+        "Role": {
+          "Ref": "ExecutionRole"
+        },
+        "Runtime": {
+          "Ref": "AuthorizeFunctionRuntime"
+        }
+      }
+    },
+    "CICDRole": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/lambda.upload.policy.json",
+        "Parameters": {
+          "RoleAndPolicyName": {
+            "Ref": "CICDRoleName"
+          },
+          "LambdaARN": {
+            "Fn::GetAtt": [
+              "AuthorizeFunction",
+              "Arn"
+            ]
+          },
+          "Repository": {
+            "Ref": "Repository"
+          },
+          "Branch": {
+            "Ref": "Branch"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "FunctionName": {
+      "Description": "Name of the function running authorization",
+      "Value": {
+        "Ref": "AuthorizeFunction"
+      }
+    },
+    "FunctionArn": {
+      "Description": "ARN of the function running authorization. Exported for IAM use",
+      "Value": {
+        "Fn::GetAtt": [
+          "AuthorizeFunction",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-FunctionName"
+        }
+      }
+    },
+    "GitRoleArn": {
+      "Description": "Name of the GitHub role that can access this lambda function and deploy",
+      "Value": {
+        "Fn::GetAtt": [
+          "CICDRole",
+          "Outputs.GitHubPrincipalledRoleArn"
+        ]
+      }
+    }
+  }
+}
