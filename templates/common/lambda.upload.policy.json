@@ -44,7 +44,8 @@
                 "lambda:ListVersionsByFunction",
                 "lambda:GetFunction",
                 "lambda:InvokeFunction",
-                "lambda:UpdateFunctionCode"
+                "lambda:UpdateFunctionCode",
+                "lambda:UpdateFunctionConfiguration"
               ],
               "Resource": [
                 {
