@@ -38,7 +38,7 @@
       "AuthenticateExecutionRoleName": {
         "Type": "String",
         "AllowedPattern": "^.{1,64}$",
-        "Default": "AuthorizeSchoepprojectUsersExecutionRole"
+        "Default": "AuthenticateSchoepprojectDevUsers"
       },
       "AuthenticateFunctionName": {
         "Type": "String",
