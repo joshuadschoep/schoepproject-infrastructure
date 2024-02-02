@@ -56,53 +56,53 @@ jobs:
                 role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
                 no-fail-on-empty-changeset: "1"
                 capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-          # - name: com-schoepproject-authorize
-          #   uses: aws-actions/aws-cloudformation-github-deploy@master
-          #   with:
-          #       name: com-schoepproject-authorize
-          #       template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.authorize.json
-          #       role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          #       no-fail-on-empty-changeset: "1"
-          #       capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-          # - name: com-schoepproject-www
-          #   uses: aws-actions/aws-cloudformation-github-deploy@master
-          #   with:
-          #       name: com-schoepproject-www
-          #       template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
-          #       role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          #       no-fail-on-empty-changeset: "1"
-          #       capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-          # - name: com-schoepproject-assets
-          #   uses: aws-actions/aws-cloudformation-github-deploy@master
-          #   with:
-          #       name: com-schoepproject-assets
-          #       template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.assets.json
-          #       role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          #       no-fail-on-empty-changeset: "1"
-          #       capabilities: CAPABILITY_IAM
-          # - name: com-schoepproject-payout
-          #   uses: aws-actions/aws-cloudformation-github-deploy@master
-          #   with:
-          #       name: com-schoepproject-payout
-          #       template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
-          #       role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          #       no-fail-on-empty-changeset: "1"
-          #       capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-          #       parameter-overrides: >-
-          #           Repository=joshuadschoep/payout-schoepproject-com,
-          #           DomainName=payout.schoepproject.com,
-          #           BucketNameSuffix=payout,
-          #           CICDRoleName=payout-schoepproject-com-cd
-          # - name: com-schoepproject-snowfall
-          #   uses: aws-actions/aws-cloudformation-github-deploy@master
-          #   with:
-          #       name: com-schoepproject-snowfall
-          #       template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
-          #       role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          #       no-fail-on-empty-changeset: "1"
-          #       capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-          #       parameter-overrides: >-
-          #           Repository=joshuadschoep/snowfall-schoepproject-com,
-          #           DomainName=snowfall.schoepproject.com,
-          #           BucketNameSuffix=snowfall,
-          #           CICDRoleName=snowfall-schoepproject-com-cd
+          - name: com-schoepproject-authorize
+            uses: aws-actions/aws-cloudformation-github-deploy@master
+            with:
+                name: com-schoepproject-authorize
+                template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.authorize.json
+                role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+                no-fail-on-empty-changeset: "1"
+                capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+          - name: com-schoepproject-www
+            uses: aws-actions/aws-cloudformation-github-deploy@master
+            with:
+                name: com-schoepproject-www
+                template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
+                role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+                no-fail-on-empty-changeset: "1"
+                capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+          - name: com-schoepproject-assets
+            uses: aws-actions/aws-cloudformation-github-deploy@master
+            with:
+                name: com-schoepproject-assets
+                template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.assets.json
+                role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+                no-fail-on-empty-changeset: "1"
+                capabilities: CAPABILITY_IAM
+          - name: com-schoepproject-payout
+            uses: aws-actions/aws-cloudformation-github-deploy@master
+            with:
+                name: com-schoepproject-payout
+                template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
+                role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+                no-fail-on-empty-changeset: "1"
+                capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+                parameter-overrides: >-
+                    Repository=joshuadschoep/payout-schoepproject-com,
+                    DomainName=payout.schoepproject.com,
+                    BucketNameSuffix=payout,
+                    CICDRoleName=payout-schoepproject-com-cd
+          - name: com-schoepproject-snowfall
+            uses: aws-actions/aws-cloudformation-github-deploy@master
+            with:
+                name: com-schoepproject-snowfall
+                template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
+                role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+                no-fail-on-empty-changeset: "1"
+                capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+                parameter-overrides: >-
+                    Repository=joshuadschoep/snowfall-schoepproject-com,
+                    DomainName=snowfall.schoepproject.com,
+                    BucketNameSuffix=snowfall,
+                    CICDRoleName=snowfall-schoepproject-com-cd
