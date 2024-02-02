@@ -1,17 +1,28 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Infrastructure Template for www.schoepproject.com",
+    "Description": "Infrastructure Template for dev.schoepproject.com",
     "Parameters": {
-      "Repository": {
+      "FrontendRepository": {
         "Type": "String",
         "Description": "Name of the GitHub Repository that will be allowed to access resources",
         "AllowedPattern": "^joshuadschoep/.*$",
         "Default": "joshuadschoep/schoepproject-com"
       },
-      "Branch": {
+      "FrontendBranch": {
         "Type": "String",
         "Description": "Name of the GitHub Branch that will be allowed to access resources",
         "Default": "dev"
+      },
+      "LambdaRepository": {
+        "Type": "String",
+        "Description": "Name of the GitHub Repository that will be allowed to access resources",
+        "AllowedPattern": "^joshuadschoep/.*$",
+        "Default": "joshuadschoep/dev-schoepproject-auth"
+      },
+      "LambdaBranch": {
+        "Type": "String",
+        "Description": "Name of the GitHub Branch that will be allowed to access resources",
+        "Default": "main"
       },
       "DomainName": {
         "Type": "String",
@@ -32,7 +43,7 @@
       "AuthenticateFunctionName": {
         "Type": "String",
         "AllowedPattern": "^.{1,64}$",
-        "Default": "authorizeSchoepprojectDevelopmentUsers"
+        "Default": "authenticateSchoepprojectDevDotCom"
       },
       "AuthenticateFunctionHandler": {
         "Type": "String",
@@ -164,10 +175,10 @@
                     ]
                 },
                 "Repository": {
-                    "Ref": "Repository"
+                    "Ref": "LambdaRepository"
                 },
                 "Branch": {
-                    "Ref": "Branch"
+                    "Ref": "LambdaBranch"
                 }
             }
         }
@@ -193,10 +204,10 @@
               ]
             },
             "Repository": {
-              "Ref": "Repository"
+              "Ref": "FrontendRepository"
             },
             "Branch": {
-              "Ref": "Branch"
+              "Ref": "FrontendBranch"
             }
           }
         }
