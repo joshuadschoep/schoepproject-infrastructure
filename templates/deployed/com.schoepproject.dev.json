@@ -1,263 +1,352 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Infrastructure Template for dev.schoepproject.com",
-    "Parameters": {
-      "FrontendRepository": {
-        "Type": "String",
-        "Description": "Name of the GitHub Repository that will be allowed to access resources",
-        "AllowedPattern": "^joshuadschoep/.*$",
-        "Default": "joshuadschoep/schoepproject-com"
-      },
-      "FrontendBranch": {
-        "Type": "String",
-        "Description": "Name of the GitHub Branch that will be allowed to access resources",
-        "Default": "dev"
-      },
-      "LambdaRepository": {
-        "Type": "String",
-        "Description": "Name of the GitHub Repository that will be allowed to access resources",
-        "AllowedPattern": "^joshuadschoep/.*$",
-        "Default": "joshuadschoep/dev-schoepproject-auth"
-      },
-      "LambdaBranch": {
-        "Type": "String",
-        "Description": "Name of the GitHub Branch that will be allowed to access resources",
-        "Default": "main"
-      },
-      "DomainName": {
-        "Type": "String",
-        "Description": "Name of the domain that this website should exist under. Default is www.schoepproject.com",
-        "Default": "dev.schoepproject.com",
-        "AllowedPattern": "^([a-zA-Z0-9]+\\.)+schoepproject.com"
-      },
-      "BucketNameSuffix": {
-        "Type": "String",
-        "Description": "All buckets will be named via domain name and account. Use this to differentiate suffixes",
-        "Default": "dev"
-      },
-      "AuthenticateExecutionRoleName": {
-        "Type": "String",
-        "AllowedPattern": "^.{1,64}$",
-        "Default": "AuthenticateSchoepprojectDevUsers"
-      },
-      "AuthenticateFunctionName": {
-        "Type": "String",
-        "AllowedPattern": "^.{1,64}$",
-        "Default": "authenticateSchoepprojectDevDotCom"
-      },
-      "AuthenticateFunctionHandler": {
-        "Type": "String",
-        "AllowedPattern": "^[^\\s]+$",
-        "Default": "index.handler"
-      },
-      "AuthenticateFunctionRuntime": {
-        "Type": "String",
-        "AllowedPattern": "^nodejs(18|20)\\.x$",
-        "Default": "nodejs20.x"
-      },
-      "S3CICDRoleName": {
-        "Type": "String",
-        "Description": "Name that should be given to the CICD role and policy that controls S3 and CF",
-        "Default": "dev-schoepproject-com-s3-cd"
-      },
-      "LambdaCICDRoleName": {
-        "Type": "String",
-        "Description": "Name that should be given to the CICD role and policy that controls Lambda",
-        "Default": "dev-schoepproject-com-lambda-cd"
-      }
-
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Infrastructure Template for dev.schoepproject.com",
+  "Parameters": {
+    "FrontendRepository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$",
+      "Default": "joshuadschoep/schoepproject-com"
     },
-    "Resources": {
-      "FrontendStack": {
-        "Type": "AWS::CloudFormation::Stack",
-        "Properties": {
-          "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/static.frontend.json",
-          "Parameters": {
-            "DomainName": {
-              "Ref": "DomainName"
-            },
-            "BucketName": {
-              "Fn::Sub": "com-schoepproject-${BucketNameSuffix}-${AWS::AccountId}"
-            }
+    "FrontendBranch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "dev"
+    },
+    "LambdaRepository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$",
+      "Default": "joshuadschoep/dev-schoepproject-auth"
+    },
+    "LambdaBranch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
+    },
+    "DomainName": {
+      "Type": "String",
+      "Description": "Name of the domain that this website should exist under. Default is www.schoepproject.com",
+      "Default": "dev.schoepproject.com",
+      "AllowedPattern": "^([a-zA-Z0-9]+\\.)+schoepproject.com"
+    },
+    "BucketNameSuffix": {
+      "Type": "String",
+      "Description": "All buckets will be named via domain name and account. Use this to differentiate suffixes",
+      "Default": "dev"
+    },
+    "AuthenticateExecutionRoleName": {
+      "Type": "String",
+      "AllowedPattern": "^.{1,64}$",
+      "Default": "AuthenticateSchoepprojectDevUsers"
+    },
+    "AuthenticateFunctionName": {
+      "Type": "String",
+      "AllowedPattern": "^.{1,64}$",
+      "Default": "authenticateSchoepprojectDevDotCom"
+    },
+    "AuthenticateFunctionHandler": {
+      "Type": "String",
+      "AllowedPattern": "^[^\\s]+$",
+      "Default": "index.handler"
+    },
+    "AuthenticateFunctionRuntime": {
+      "Type": "String",
+      "AllowedPattern": "^nodejs(18|20)\\.x$",
+      "Default": "nodejs20.x"
+    },
+    "S3CICDRoleName": {
+      "Type": "String",
+      "Description": "Name that should be given to the CICD role and policy that controls S3 and CF",
+      "Default": "dev-schoepproject-com-s3-cd"
+    },
+    "LambdaCICDRoleName": {
+      "Type": "String",
+      "Description": "Name that should be given to the CICD role and policy that controls Lambda",
+      "Default": "dev-schoepproject-com-lambda-cd"
+    },
+    "EdgeCICDRoleName": {
+      "Type": "String",
+      "Description": "Name that should be given to the CICD role and policy that deploys Lambda to Edge",
+      "Default": "dev-schoepproject-com-edge-cd"
+    }
+  },
+  "Resources": {
+    "FrontendStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/static.frontend.json",
+        "Parameters": {
+          "DomainName": {
+            "Ref": "DomainName"
+          },
+          "BucketName": {
+            "Fn::Sub": "com-schoepproject-${BucketNameSuffix}-${AWS::AccountId}"
           }
         }
-      },
-      "AuthenticationExecutionPolicy": {
-        "Type": "AWS::IAM::ManagedPolicy",
-        "Properties": {
-            "Description": {
-                "Fn::Sub": "Policy to allow ${AuthenticateFunctionName} to access dev authorization function"
-            },
-            "ManagedPolicyName": {
-                "Ref": "AuthenticateExecutionRoleName"
-            },
-            "PolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Sid": "AllowLambdaInvoke",
-                        "Effect": "Allow",
-                        "Action": [
-                            "lambda:InvokeFunction"
-                        ],
-                        "Resource": [
-                            {
-                                "Fn::ImportValue": "com-schoepproject-authorize-FunctionName"
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-      },
-      "AuthenticateExecutionRole": {
-        "Type": "AWS::IAM::Role",
-        "Properties": {
-            "Description": {
-                "Fn::Sub": "Role to allow ${AuthenticateFunctionName} to invoke authorize function"
-            },
-            "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": "lambda.amazonaws.com"
-                        },
-                        "Action": "sts:AssumeRole"
-                    }
-                ]
-            },
-            "ManagedPolicyArns": [
+      }
+    },
+    "AuthenticationExecutionPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Policy to allow ${AuthenticateFunctionName} to access dev authorization function"
+        },
+        "ManagedPolicyName": {
+          "Ref": "AuthenticateExecutionRoleName"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowLambdaInvoke",
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": [
                 {
-                    "Ref": "AuthenticationExecutionPolicy"
+                  "Fn::ImportValue": "com-schoepproject-authorize-FunctionName"
                 }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AuthenticateExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Role to allow ${AuthenticateFunctionName} to invoke authorize function"
+        },
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          {
+            "Ref": "AuthenticationExecutionPolicy"
+          }
+        ]
+      }
+    },
+    "AuthenticateFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "export const handler = () => return \"Hello Lambda\""
+        },
+        "Description": "Function that receives OIDC tokens and checks whether they have dev access",
+        "FunctionName": {
+          "Ref": "AuthenticateFunctionName"
+        },
+        "Handler": {
+          "Ref": "AuthenticateFunctionHandler"
+        },
+        "PackageType": "Zip",
+        "Role": {
+          "Fn::GetAtt": [
+            "AuthenticateExecutionRole",
+            "Arn"
+          ]
+        },
+        "Runtime": {
+          "Ref": "AuthenticateFunctionRuntime"
+        }
+      }
+    },
+    "LambdaCICDRoles": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/lambda.upload.policy.json",
+        "Parameters": {
+          "RoleAndPolicyName": {
+            "Ref": "LambdaCICDRoleName"
+          },
+          "LambdaARN": {
+            "Fn::GetAtt": [
+              "AuthenticateFunction",
+              "Arn"
             ]
-        }
-      },
-      "AuthenticateFunction": {
-        "Type": "AWS::Lambda::Function",
-        "Properties": {
-            "Code": {
-                "ZipFile": "export const handler = () => return \"Hello Lambda\""
-            },
-            "Description": "Function that receives OIDC tokens and checks whether they have dev access",
-            "FunctionName": {
-                "Ref": "AuthenticateFunctionName"
-            },
-            "Handler": {
-                "Ref": "AuthenticateFunctionHandler"
-            },
-            "PackageType": "Zip",
-            "Role": {
-                "Fn::GetAtt": [
-                    "AuthenticateExecutionRole",
-                    "Arn"
-                ]
-            },
-            "Runtime": {
-                "Ref": "AuthenticateFunctionRuntime"
-            }
-        }
-      },
-      "LambdaCICDRoles": {
-        "Type": "AWS::CloudFormation::Stack",
-        "Properties": {
-            "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/lambda.upload.policy.json",
-            "Parameters": {
-                "RoleAndPolicyName": {
-                    "Ref": "LambdaCICDRoleName"
-                },
-                "LambdaARN": {
-                    "Fn::GetAtt": [
-                        "AuthenticateFunction",
-                        "Arn"
-                    ]
-                },
-                "Repository": {
-                    "Ref": "LambdaRepository"
-                },
-                "Branch": {
-                    "Ref": "LambdaBranch"
-                }
-            }
-        }
-      },
-      "S3CICDRoles": {
-        "Type": "AWS::CloudFormation::Stack",
-        "Properties": {
-          "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/s3.upload.policy.json",
-          "Parameters": {
-            "RoleAndPolicyName": {
-              "Ref": "S3CICDRoleName"
-            },
-            "BucketARN": {
-              "Fn::GetAtt": [
-                "FrontendStack",
-                "Outputs.BucketARN"
-              ]
-            },
-            "DistributionARN": {
-              "Fn::GetAtt": [
-                "FrontendStack",
-                "Outputs.DistributionARN"
-              ]
-            },
-            "Repository": {
-              "Ref": "FrontendRepository"
-            },
-            "Branch": {
-              "Ref": "FrontendBranch"
-            }
+          },
+          "Repository": {
+            "Ref": "LambdaRepository"
+          },
+          "Branch": {
+            "Ref": "LambdaBranch"
           }
         }
       }
     },
-    "Outputs": {
-      "Bucket": {
-        "Description": "Name of the bucket to upload static website files to",
-        "Value": {
-          "Fn::GetAtt": [
-            "FrontendStack",
-            "Outputs.BucketName"
-          ]
-        }
-      },
-      "Distribution": {
-        "Description": "Name of the distribution to invalidate on update",
-        "Value": {
-          "Fn::GetAtt": [
-            "FrontendStack",
-            "Outputs.DistributionName"
-          ]
-        }
-      },
-      "Function": {
-        "Description": "ARN of the function running authentication.",
-        "Value": {
+    "S3CICDRoles": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common/s3.upload.policy.json",
+        "Parameters": {
+          "RoleAndPolicyName": {
+            "Ref": "S3CICDRoleName"
+          },
+          "BucketARN": {
             "Fn::GetAtt": [
-                "AuthenticateFunction",
-                "Arn"
+              "FrontendStack",
+              "Outputs.BucketARN"
             ]
+          },
+          "DistributionARN": {
+            "Fn::GetAtt": [
+              "FrontendStack",
+              "Outputs.DistributionARN"
+            ]
+          },
+          "Repository": {
+            "Ref": "FrontendRepository"
+          },
+          "Branch": {
+            "Ref": "FrontendBranch"
+          }
         }
-      },
-      "S3UploadGitRoleArn": {
-        "Description": "Name of the GitHub role that can access this bucket and distribution",
-        "Value": {
-          "Fn::GetAtt": [
-            "S3CICDRoles",
-            "Outputs.GitHubPrincipalledRoleArn"
+      }
+    },
+    "LambdaEdgePolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Policy to allow ${LambdaRepository} to upload edge functions to cloudfront distro"
+        },
+        "ManagedPolicyName": {
+          "Ref": "EdgeCICDRoleName"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowLambdaEdgeDeploy",
+              "Effect": "Allow",
+              "Action": [
+                "lambda:GetFunction",
+                "lambda:PublishVersion",
+                "lambda:EnableReplication*",
+                "lambda:DisableReplication*",
+                "iam:CreateServiceLinkedRole",
+                "cloudfront:UpdateDistribution"
+              ],
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "FrontendStack",
+                    "Outputs.DistributionARN"
+                  ]
+                },
+                {
+                  "Fn::GetAtt": [
+                    "AuthenticateFunction",
+                    "Arn"
+                  ]
+                }
+              ]
+            }
           ]
         }
-      },
-      "LambdaUploadGitRoleArn": {
-        "Description": "Name of the role that can access the authorization function to be deployed at edge",
-        "Value": {
-            "Fn::GetAtt": [
-                "LambdaCICDRoles",
-                "Outputs.GitHubPrincipalledRoleArn"
-            ]
+      }
+    },
+    "LambdaEdgeRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": "arn:aws:iam::145724753995:oidc-provider/token.actions.githubusercontent.com"
+              },
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": {
+                "StringEquals": {
+                  "token.actions.githubusercontent.com:sub": {
+                    "Fn::Sub": "repo:${LambdaRepository}:ref:refs/heads/${LambdaBranch}"
+                  },
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                }
+              }
+            }
+          ]
+        },
+        "Description": "Role to allow GitHub access to S3 bucket and CF distribution",
+        "ManagedPolicyArns": [
+          {
+            "Ref": "LambdaEdgePolicy"
+          }
+        ],
+        "RoleName": {
+          "Ref": "EdgeCICDRoleName"
         }
       }
     }
+  },
+  "Outputs": {
+    "Bucket": {
+      "Description": "Name of the bucket to upload static website files to",
+      "Value": {
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.BucketName"
+        ]
+      }
+    },
+    "Distribution": {
+      "Description": "Name of the distribution to invalidate on update",
+      "Value": {
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.DistributionName"
+        ]
+      }
+    },
+    "Function": {
+      "Description": "ARN of the function running authentication.",
+      "Value": {
+        "Fn::GetAtt": [
+          "AuthenticateFunction",
+          "Arn"
+        ]
+      }
+    },
+    "S3UploadGitRoleArn": {
+      "Description": "Name of the GitHub role that can access this bucket and distribution",
+      "Value": {
+        "Fn::GetAtt": [
+          "S3CICDRoles",
+          "Outputs.GitHubPrincipalledRoleArn"
+        ]
+      }
+    },
+    "LambdaUploadGitRoleArn": {
+      "Description": "Name of the role that can access the authorization function to be deployed at edge",
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaCICDRoles",
+          "Outputs.GitHubPrincipalledRoleArn"
+        ]
+      }
+    },
+    "EdgeDeployGitRoleArn": {
+      "Description": "Name of the role that can publish Lambda versions and upload to CloudFront",
+      "Value": {
+        "Fn::GetAtt": [
+          "LambdaEdgeRole",
+          "Arn"
+        ]
+      }
+    }
   }
+}
