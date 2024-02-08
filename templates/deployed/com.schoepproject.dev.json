@@ -238,6 +238,7 @@
                 "lambda:DisableReplication*",
                 "iam:CreateServiceLinkedRole",
                 "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
                 "cloudfront:UpdateDistribution"
               ],
               "Resource": [
