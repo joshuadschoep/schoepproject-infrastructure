@@ -101,11 +101,17 @@
             {
               "Sid": "AllowLambdaInvoke",
               "Effect": "Allow",
-              "Action": ["lambda:InvokeFunction"],
+              "Action": [
+                "lambda:InvokeFunction",
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents"
+              ],
               "Resource": [
                 {
                   "Fn::ImportValue": "com-schoepproject-authorize-FunctionName"
-                }
+                },
+                "arn:aws:logs:*:*:*"
               ]
             }
           ]
