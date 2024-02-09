@@ -253,6 +253,18 @@
                     "AuthenticateFunction",
                     "Arn"
                   ]
+                },
+                
+                {
+                  "Fn::Join": [
+                    "",
+                    {
+                  "Fn::GetAtt": [
+                    "AuthenticateFunction",
+                    "Arn"
+                  ]
+                }, ":*"
+                  ]
                 }
               ]
             }
