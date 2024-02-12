@@ -130,7 +130,10 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "Service": ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
+                "Service": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ]
               },
               "Action": "sts:AssumeRole"
             }
@@ -158,11 +161,15 @@
         },
         "PackageType": "Zip",
         "Role": {
-          "Fn::GetAtt": ["AuthenticateExecutionRole", "Arn"]
+          "Fn::GetAtt": [
+            "AuthenticateExecutionRole",
+            "Arn"
+          ]
         },
         "Runtime": {
           "Ref": "AuthenticateFunctionRuntime"
-        }
+        },
+        "Timeout": 6
       }
     },
     "LambdaCICDRoles": {
@@ -174,7 +181,10 @@
             "Ref": "LambdaCICDRoleName"
           },
           "LambdaARN": {
-            "Fn::GetAtt": ["AuthenticateFunction", "Arn"]
+            "Fn::GetAtt": [
+              "AuthenticateFunction",
+              "Arn"
+            ]
           },
           "Repository": {
             "Ref": "LambdaRepository"
@@ -194,10 +204,16 @@
             "Ref": "S3CICDRoleName"
           },
           "BucketARN": {
-            "Fn::GetAtt": ["FrontendStack", "Outputs.BucketARN"]
+            "Fn::GetAtt": [
+              "FrontendStack",
+              "Outputs.BucketARN"
+            ]
           },
           "DistributionARN": {
-            "Fn::GetAtt": ["FrontendStack", "Outputs.DistributionARN"]
+            "Fn::GetAtt": [
+              "FrontendStack",
+              "Outputs.DistributionARN"
+            ]
           },
           "Repository": {
             "Ref": "FrontendRepository"
@@ -235,18 +251,26 @@
               ],
               "Resource": [
                 {
-                  "Fn::GetAtt": ["FrontendStack", "Outputs.DistributionARN"]
+                  "Fn::GetAtt": [
+                    "FrontendStack",
+                    "Outputs.DistributionARN"
+                  ]
                 },
                 {
-                  "Fn::GetAtt": ["AuthenticateFunction", "Arn"]
+                  "Fn::GetAtt": [
+                    "AuthenticateFunction",
+                    "Arn"
+                  ]
                 },
-
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::GetAtt": ["AuthenticateFunction", "Arn"]
+                        "Fn::GetAtt": [
+                          "AuthenticateFunction",
+                          "Arn"
+                        ]
                       },
                       ":*"
                     ]
@@ -297,37 +321,55 @@
     "Bucket": {
       "Description": "Name of the bucket to upload static website files to",
       "Value": {
-        "Fn::GetAtt": ["FrontendStack", "Outputs.BucketName"]
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.BucketName"
+        ]
       }
     },
     "Distribution": {
       "Description": "Name of the distribution to invalidate on update",
       "Value": {
-        "Fn::GetAtt": ["FrontendStack", "Outputs.DistributionName"]
+        "Fn::GetAtt": [
+          "FrontendStack",
+          "Outputs.DistributionName"
+        ]
       }
     },
     "Function": {
       "Description": "ARN of the function running authentication.",
       "Value": {
-        "Fn::GetAtt": ["AuthenticateFunction", "Arn"]
+        "Fn::GetAtt": [
+          "AuthenticateFunction",
+          "Arn"
+        ]
       }
     },
     "S3UploadGitRoleArn": {
       "Description": "Name of the GitHub role that can access this bucket and distribution",
       "Value": {
-        "Fn::GetAtt": ["S3CICDRoles", "Outputs.GitHubPrincipalledRoleArn"]
+        "Fn::GetAtt": [
+          "S3CICDRoles",
+          "Outputs.GitHubPrincipalledRoleArn"
+        ]
       }
     },
     "LambdaUploadGitRoleArn": {
       "Description": "Name of the role that can access the authorization function to be deployed at edge",
       "Value": {
-        "Fn::GetAtt": ["LambdaCICDRoles", "Outputs.GitHubPrincipalledRoleArn"]
+        "Fn::GetAtt": [
+          "LambdaCICDRoles",
+          "Outputs.GitHubPrincipalledRoleArn"
+        ]
       }
     },
     "EdgeDeployGitRoleArn": {
       "Description": "Name of the role that can publish Lambda versions and upload to CloudFront",
       "Value": {
-        "Fn::GetAtt": ["LambdaEdgeRole", "Arn"]
+        "Fn::GetAtt": [
+          "LambdaEdgeRole",
+          "Arn"
+        ]
       }
     }
   }
