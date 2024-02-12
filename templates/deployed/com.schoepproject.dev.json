@@ -169,7 +169,7 @@
         "Runtime": {
           "Ref": "AuthenticateFunctionRuntime"
         },
-        "Timeout": 6
+        "Timeout": 5
       }
     },
     "LambdaCICDRoles": {
