@@ -1,92 +1,70 @@
-name: Deploy
-on:
-  push:
-    branches: main
+name: Dry Run
+on: pull_request
 
 jobs:
-  lint:
+  changes:
+    uses: ./.github/workflows/check-path-changes.yml
+  dry-run:
     runs-on: ubuntu-latest
+    needs: changes
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Linter
-        uses: scottbrenner/cfn-lint-action@v2
-      - name: Lint
-        run: |
-          cfn-lint --version
-          cfn-lint templates/**/*.json
-  upload:
-    runs-on: ubuntu-latest
-    needs: lint
-    env:
-      AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-      AWS_TEMPLATE_FILE: ${{ secrets.AWS_TEMPLATE_FILE }}
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Configure S3 Upload Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE }}
-          role-session-name: ${{ secrets.AWS_UPLOAD_SESSION_NAME }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Upload Template to S3
-        run: bash ./.github/scripts/upload.sh
-  deploy:
-    runs-on: ubuntu-latest
-    needs: upload
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Configure CloudFormation Credentials
+        uses: actions/checkout/v4
+      - name: Configure Cloudformation Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: com-schoepproject-dev
+        if: ${{ needs.changes.outputs.com_schoepproject_dev_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-dev
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.dev.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          no-execute-changeset: 0
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-authorize
+        if: ${{ needs.changes.outputs.com_schoepproject_authorize_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-authorize
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.authorize.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          no-execute-changeset: 0
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-www
+        if: ${{ needs.changes.outputs.com_schoepproject_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-www
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          no-execute-changeset: 0
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-assets
+        if: ${{ needs.changes.outputs.com_schoepproject_assets_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-assets
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.assets.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          no-execute-changeset: 0
           capabilities: CAPABILITY_IAM
       - name: com-schoepproject-payout
+        if: ${{ needs.changes.outputs.com_schoepproject_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-payout
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          no-execute-changeset: 0
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
           parameter-overrides: >-
             Repository=joshuadschoep/payout-schoepproject-com,
@@ -94,12 +72,14 @@ jobs:
             BucketNameSuffix=payout,
             CICDRoleName=payout-schoepproject-com-cd
       - name: com-schoepproject-snowfall
+        if: ${{ needs.changes.outputs.com_schoepproject_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-snowfall
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
+          no-execute-changeset: 0
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
           parameter-overrides: >-
             Repository=joshuadschoep/snowfall-schoepproject-com,
