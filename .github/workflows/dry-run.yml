@@ -3,7 +3,7 @@ on: pull_request
 
 jobs:
   changes:
-    uses: ./.github/workflows/check-path-changes.yml
+    uses: ./.github/workflows/changes.yml
   dry-run:
     runs-on: ubuntu-latest
     needs: changes
