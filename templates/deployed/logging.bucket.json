@@ -24,7 +24,7 @@
     "LoggingBucketName": {
       "Description": "Name of the bucket to store CloudFront logging data to",
       "Value": {
-        "Fn::GetAtt": ["LoggingBucket", "Name"]
+        "Ref": "LoggingBucket"
       },
       "Export": {
         "Name": {

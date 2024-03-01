@@ -83,7 +83,6 @@
           "Enabled": true,
           "HttpVersion": "http2and3",
           "IPV6Enabled": true,
-          "Logging": {},
           "Origins": [
             {
               "DomainName": {
