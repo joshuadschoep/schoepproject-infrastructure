@@ -15,9 +15,7 @@
     "HostedZoneId": {
       "Type": "String",
       "Default": "ZOZJO7VU8BJZE",
-      "AllowedValues": [
-        "ZOZJO7VU8BJZE"
-      ],
+      "AllowedValues": ["ZOZJO7VU8BJZE"],
       "Description": "ID of the hosted zone for DNS and Certificate chains"
     }
   },
@@ -47,7 +45,7 @@
       "UpdateReplacePolicy": "Retain",
       "Properties": {
         "BucketName": {
-          "Fn::Sub": "${BucketName}"
+          "Ref": "BucketName"
         }
       }
     },
@@ -71,14 +69,11 @@
         "DistributionConfig": {
           "Aliases": [
             {
-              "Fn::Sub": "${DomainName}"
+              "Ref": "DomainName"
             }
           ],
           "DefaultCacheBehavior": {
-            "AllowedMethods": [
-              "GET",
-              "HEAD"
-            ],
+            "AllowedMethods": ["GET", "HEAD"],
             "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
             "Compress": true,
             "TargetOriginId": "S3BucketOrigin",
@@ -91,20 +86,14 @@
           "Origins": [
             {
               "DomainName": {
-                "Fn::GetAtt": [
-                  "StaticFileBucket",
-                  "DomainName"
-                ]
+                "Fn::GetAtt": ["StaticFileBucket", "DomainName"]
               },
               "Id": "S3BucketOrigin",
               "S3OriginConfig": {
                 "OriginAccessIdentity": ""
               },
               "OriginAccessControlId": {
-                "Fn::GetAtt": [
-                  "CDNOriginAccessControl",
-                  "Id"
-                ]
+                "Fn::GetAtt": ["CDNOriginAccessControl", "Id"]
               }
             }
           ],
@@ -165,10 +154,7 @@
       "Properties": {
         "AliasTarget": {
           "DNSName": {
-            "Fn::GetAtt": [
-              "CDN",
-              "DomainName"
-            ]
+            "Fn::GetAtt": ["CDN", "DomainName"]
           },
           "HostedZoneId": "Z2FDTNDATAQYW2"
         },
@@ -189,10 +175,7 @@
     "BucketARN": {
       "Description": "The ARN for the static bucket that is created via this stack",
       "Value": {
-        "Fn::GetAtt": [
-          "StaticFileBucket",
-          "Arn"
-        ]
+        "Fn::GetAtt": ["StaticFileBucket", "Arn"]
       }
     },
     "BucketName": {

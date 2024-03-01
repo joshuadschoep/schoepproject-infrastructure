@@ -1,0 +1,47 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Bucket exported to allow for CloudFront distributions to save their access and error logs",
+  "Parameters": {
+    "BucketName": {
+      "Type": "String",
+      "AllowedPattern": "^[a-zA-Z0-9].{0,61}[a-zA-Z0-9]$",
+      "Default": "com-schoepproject-logging-bucket"
+    }
+  },
+  "Resources": {
+    "LoggingBucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "BucketName": {
+          "Ref": "BucketName"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "LoggingBucketName": {
+      "Description": "Name of the bucket to store CloudFront logging data to",
+      "Value": {
+        "Ref": "LoggingBucket"
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-BucketName"
+        }
+      }
+    },
+    "LoggingBucketARN": {
+      "Description": "ARN of the bucket to store CloudFront logging data to",
+      "Value": {
+        "Fn::GetAtt": ["LoggingBucket", "Arn"]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-BucketARN"
+        }
+      }
+    }
+  }
+}
