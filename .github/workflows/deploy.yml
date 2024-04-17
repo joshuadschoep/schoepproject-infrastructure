@@ -50,6 +50,15 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
+      - name: com-schoepproject-backend
+        if: ${{ needs.changes.outputs.com_schoepproject_backend_changed == 'true' || needs.changes.outputs.core == 'true' }}
+        uses: aws-actions/aws-cloudformation-github-deploy@master
+        with:
+          name: com-schoepproject-dev
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.dev.json
+          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-dev
         if: ${{ needs.changes.outputs.com_schoepproject_dev_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master

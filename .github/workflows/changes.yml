@@ -4,6 +4,8 @@ on:
     outputs:
       core_changed:
         value: ${{ jobs.checkpaths.outputs.core }}
+      com_schoepproject_backend_changed:
+        value: ${{ jobs.checkpaths.outputs.com_schoepproject_backend }}
       com_schoepproject_dev_changed:
         value: ${{ jobs.checkpaths.outputs.com_schoepproject_dev }}
       com_schoepproject_authorize_changed:
@@ -20,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       core: ${{ steps.changes.outputs.core }}
+      com_schoepproject_backend: ${{ steps.changes.outputs.com_schoepproject_backend }}
       com_schoepproject_dev: ${{ steps.changes.outputs.com_schoepproject_dev }}
       com_schoepproject_authorize: ${{ steps.changes.outputs.com_schoepproject_authorize }}
       com_schoepproject: ${{ steps.changes.outputs.com_schoepproject }}
@@ -35,6 +38,8 @@ jobs:
           filters: |
             core:
               - 'templates/common'
+            com_schoepproject_backend:
+              - 'templates/com.schoepproject.backend.json'
             com_schoepproject_dev:
               - 'templates/com.schoepproject.dev.json'
             com_schoepproject_authorize:

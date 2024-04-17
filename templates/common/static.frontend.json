@@ -14,8 +14,8 @@
     },
     "HostedZoneId": {
       "Type": "String",
-      "Default": "ZOZJO7VU8BJZE",
-      "AllowedValues": ["ZOZJO7VU8BJZE"],
+      "Default": "Z02545003H58NSPVVXGSE",
+      "AllowedValues": ["Z02545003H58NSPVVXGSE"],
       "Description": "ID of the hosted zone for DNS and Certificate chains"
     }
   },
