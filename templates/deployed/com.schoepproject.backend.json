@@ -1,0 +1,28 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Backend infrastructure for schoepproject.com to handle API calls and email calls",
+  "Parameters": {
+    "EmailDomainName": {
+      "Type": "String",
+      "AllowedPattern": "([a-zA-Z0-9]+\\.)*schoepproject.com",
+      "Description": "Name of the domain that is requesting email verification",
+      "Default": "schoepproject.com"
+    }
+  },
+  "Resources": {
+    "EmailDomain": {
+      "Type": "AWS::SES::EmailIdentity",
+      "Properties": {
+        "DkimAttributes": {
+          "SigningEnabled": true
+        },
+        "DkimSigningAttributes": {
+          "NextSigningKeyLength": "RSA_2048_BIT"
+        },
+        "EmailIdentity": {
+          "Ref": "EmailDomainName"
+        }
+      }
+    }
+  }
+}
