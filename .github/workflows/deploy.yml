@@ -53,7 +53,7 @@ jobs:
       - name: com-schoepproject-backend
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
-          name: com-schoepproject-dev
+          name: com-schoepproject-backend
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.dev.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
