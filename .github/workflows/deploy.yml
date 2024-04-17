@@ -51,7 +51,6 @@ jobs:
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: com-schoepproject-backend
-        if: ${{ needs.changes.outputs.com_schoepproject_backend_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-dev
@@ -60,7 +59,6 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-dev
-        if: ${{ needs.changes.outputs.com_schoepproject_dev_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-dev
@@ -69,7 +67,6 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-authorize
-        if: ${{ needs.changes.outputs.com_schoepproject_authorized_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-authorize
@@ -78,7 +75,6 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-www
-        if: ${{ needs.changes.outputs.com_schoepproject_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-www
@@ -87,7 +83,6 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-assets
-        if: ${{ needs.changes.outputs.com_schoepproject_assets_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-assets
@@ -96,7 +91,6 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM
       - name: com-schoepproject-payout
-        if: ${{ needs.changes.outputs.com_schoepproject_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-payout
@@ -110,7 +104,6 @@ jobs:
             BucketNameSuffix=payout,
             CICDRoleName=payout-schoepproject-com-cd
       - name: com-schoepproject-snowfall
-        if: ${{ needs.changes.outputs.com_schoepproject_changed == 'true' || needs.changes.outputs.core == 'true' }}
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-snowfall
