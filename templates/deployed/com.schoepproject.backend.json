@@ -4,7 +4,7 @@
   "Parameters": {
     "EmailDomainName": {
       "Type": "String",
-      "AllowedPattern": "([a-zA-Z0-9]+\\.)+schoepproject.com",
+      "AllowedPattern": "([a-zA-Z0-9]+\\.)*schoepproject.com",
       "Description": "Name of the domain that is requesting email verification",
       "Default": "schoepproject.com"
     }
