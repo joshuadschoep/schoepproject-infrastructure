@@ -1,0 +1,107 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Template for allowing Github repositories to upload and deploy to elastic container repository",
+  "Parameters": {
+    "RoleAndPolicyName": {
+      "Type": "String",
+      "Description": "Name for the policy and role to maintain uniqueness",
+      "AllowedPattern": "^.{1,63}$"
+    },
+    "EcrArn": {
+      "Type": "String",
+      "Description": "Name of the ECR repository that will need upload permissions",
+      "AllowedPattern": "^arn:aws:lambda:.{1,20}:[0-9]+:function:.{1,63}$"
+    },
+    "GitRepository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$"
+    },
+    "GitBranch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
+    }
+  },
+  "Resources": {
+    "UploadAndInvokePolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Policy to allow S3 uploads for CloudFormation stack ${AWS::StackName}"
+        },
+        "ManagedPolicyName": {
+          "Ref": "RoleAndPolicyName"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowContainerUpload",
+              "Effect": "Allow",
+              "Action": [
+                "ecr:CompleteLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:InitiateLayerUpload",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:PutImage"
+              ],
+              "Resource": [
+                {
+                  "Ref": "EcrArn"
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ecr:GetAuthorizationToken",
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "UploadAndInvokeRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Federated": "arn:aws:iam::145724753995:oidc-provider/token.actions.githubusercontent.com"
+              },
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": {
+                "StringEquals": {
+                  "token.actions.githubusercontent.com:sub": {
+                    "Fn::Sub": "repo:${Repository}:ref:refs/heads/${Branch}"
+                  },
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                }
+              }
+            }
+          ]
+        },
+        "Description": "Role to allow GitHub access to ECR Repository",
+        "ManagedPolicyArns": [
+          {
+            "Ref": "UploadAndInvokePolicy"
+          }
+        ],
+        "RoleName": {
+          "Ref": "RoleAndPolicyName"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "GitHubPrincipalledRoleArn": {
+      "Description": "The name of the role for GitHub to assume when trying to perform CD actions",
+      "Value": {
+        "Fn::GetAtt": ["UploadAndInvokeRole", "Arn"]
+      }
+    }
+  }
+}
