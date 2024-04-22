@@ -50,6 +50,14 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
+      - name: default-go-image-cicd-roles
+        uses: aws-actions/aws-cloudformation-github-deploy@master
+        with:
+          name: default-go-image-cicd-roles
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/ecr.default-image.schoepproject.json
+          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-backend
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:

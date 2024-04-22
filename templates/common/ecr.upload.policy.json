@@ -10,7 +10,7 @@
     "EcrArn": {
       "Type": "String",
       "Description": "Name of the ECR repository that will need upload permissions",
-      "AllowedPattern": "^arn:aws:lambda:.{1,20}:[0-9]+:function:.{1,63}$"
+      "Default": "arn:aws:ecr:us-east-1:145724753995:repository/schoepproject-go-images"
     },
     "GitRepository": {
       "Type": "String",
@@ -28,7 +28,7 @@
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": {
-          "Fn::Sub": "Policy to allow S3 uploads for CloudFormation stack ${AWS::StackName}"
+          "Fn::Sub": "Policy to allow ECR uploads for CloudFormation stack ${AWS::StackName}"
         },
         "ManagedPolicyName": {
           "Ref": "RoleAndPolicyName"

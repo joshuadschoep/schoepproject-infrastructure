@@ -1,0 +1,85 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Permissions for the default go image to upload and modify inside ECR.",
+  "Parameters": {
+    "RoleAndPolicyName": {
+      "Type": "String",
+      "Description": "Name for the policy and role to maintain uniqueness",
+      "AllowedPattern": "^.{1,63}$",
+      "Default": "github-base-go-lambda-cicd-role"
+    },
+    "EcrArn": {
+      "Type": "String",
+      "Description": "Name of the ECR repository that will need upload permissions",
+      "Default": "arn:aws:ecr:us-east-1:145724753995:repository/schoepproject-go-images"
+    },
+    "BaseTemplateFilename": {
+      "Type": "String",
+      "Description": "File name of the base template that should be used to generate ECR CICD policies and roles.",
+      "Default": "ecr.upload.policy.json"
+    },
+    "GitRepository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$",
+      "Default": "joshuadschoep/base-go-lambda"
+    },
+    "GitBranch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
+    }
+  },
+  "Mappings": {
+    "TemplateURLs": {
+      "Common": {
+        "URL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common"
+      },
+      "Deployed": {
+        "URL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/deployed"
+      }
+    }
+  },
+  "Resources": {
+    "CICDPolicyAndRole": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              {
+                "Fn::FindInMap": ["TemplateURLs", "Common", "URL"]
+              },
+              {
+                "Ref": "BaseTemplateFilename"
+              }
+            ]
+          ]
+        },
+        "Parameters": {
+          "RoleAndPolicyName": {
+            "Ref": "RoleAndPolicyName"
+          },
+          "EcrArn": {
+            "Ref": "EcrArn"
+          },
+          "GitRepository": {
+            "Ref": "GitRepository"
+          },
+          "GitBranch": {
+            "Ref": "GitBranch"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "GitHubPrincipalledRoleArn": {
+      "Description": "Name of the role that GitHub should assume when performing CICD actions with this ECR repo",
+      "Value": {
+        "Fn::GetAtt": ["CICDPolicyAndRole", "Outputs.GitHubPrincipalledRoleArn"]
+      }
+    }
+  }
+}
