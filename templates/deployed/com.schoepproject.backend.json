@@ -51,16 +51,21 @@
           "Ref": "AuthorizeExecutionRoleName"
         },
         "PolicyDocument": {
-          "Sid": "AllowEmailSend",
-          "Effect": "Allow",
-          "Action": [
-            "ses:SendEmail",
-            "ses:SendRawEmail",
-            "ses:SendTemplatedEmail"
-          ],
-          "Resource": [
-            "arn:aws:ses:*:145724753995:template/*",
-            "arn:aws:ses:us-east-1:145724753995:identity/joshua@schoepproject.com"
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowEmailSend",
+              "Effect": "Allow",
+              "Action": [
+                "ses:SendEmail",
+                "ses:SendRawEmail",
+                "ses:SendTemplatedEmail"
+              ],
+              "Resource": [
+                "arn:aws:ses:*:145724753995:template/*",
+                "arn:aws:ses:us-east-1:145724753995:identity/joshua@schoepproject.com"
+              ]
+            }
           ]
         }
       }
