@@ -8,6 +8,11 @@
       "Description": "Name of the domain that is requesting email verification",
       "Default": "schoepproject.com"
     },
+    "AuthorizeExecutionRoleName": {
+      "Type": "String",
+      "Description": "Name of the policy and service role that will be created for this function",
+      "Default": "sendEmailFromSchoepprojectFormData-service-role"
+    },
     "EmailHandlerFunctionName": {
       "Type": "String",
       "Description": "Name of the function to be created to handle emailing form posts",
@@ -36,6 +41,55 @@
         }
       }
     },
+    "ExecutionPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Policy to allow ${EmailHandlerFunctionName} to send emails to me"
+        },
+        "ManagedPolicyName": {
+          "Ref": "AuthorizeExecutionRoleName"
+        },
+        "PolicyDocument": {
+          "Sid": "AllowEmailSend",
+          "Effect": "Allow",
+          "Action": [
+            "ses:SendEmail",
+            "ses:SendRawEmail",
+            "ses:SendTemplatedEmail"
+          ],
+          "Resource": [
+            "arn:aws:ses:*:145724753995:template/*",
+            "arn:aws:ses:us-east-1:145724753995:identity/joshua@schoepproject.com"
+          ]
+        }
+      }
+    },
+    "ExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Description": {
+          "Fn::Sub": "Role to allow ${EmailHandlerFunctionName} to access S3 objects"
+        },
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          {
+            "Ref": "ExecutionPolicy"
+          }
+        ]
+      }
+    },
     "FormSendFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -47,7 +101,10 @@
         "FunctionName": {
           "Ref": "EmailHandlerFunctionName"
         },
-        "PackageType": "Image"
+        "PackageType": "Image",
+        "Role": {
+          "Fn::GetAtt": ["ExecutionRole", "Arn"]
+        }
       }
     }
   }
