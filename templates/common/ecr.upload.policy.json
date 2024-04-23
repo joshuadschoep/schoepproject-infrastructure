@@ -76,7 +76,7 @@
               "Condition": {
                 "StringEquals": {
                   "token.actions.githubusercontent.com:sub": {
-                    "Fn::Sub": "repo:${Repository}:ref:refs/heads/${Branch}"
+                    "Fn::Sub": "repo:${GitRepository}:ref:refs/heads/${GitBranch}"
                   },
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
                 }
