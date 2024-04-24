@@ -22,7 +22,7 @@
   "Mappings": {
     "Containers": {
       "DefaultGo": {
-        "Uri": "145724753995.dkr.ecr.us-east-1.amazonaws.com/schoepproject-go-images:b7e70d0b0b991e38627f8afa239b181959898158"
+        "Uri": "145724753995.dkr.ecr.us-east-1.amazonaws.com/schoepproject-go-images:latest"
       }
     }
   },
