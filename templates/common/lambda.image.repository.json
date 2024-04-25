@@ -76,7 +76,7 @@
               ],
               "Resource": [
                 {
-                  "Ref": "EcrArn"
+                  "Fn::GetAtt": ["Repository", "Arn"]
                 }
               ]
             },
