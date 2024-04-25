@@ -51,7 +51,8 @@
     "GitRepository": {
       "Type": "String",
       "Description": "Name of the GitHub Repository that will be allowed to access resources",
-      "AllowedPattern": "^joshuadschoep/.*$"
+      "AllowedPattern": "^joshuadschoep/.*$",
+      "Default": "joshuadschoep/schoepproject-com-form-handler"
     },
     "GitBranch": {
       "Type": "String",
