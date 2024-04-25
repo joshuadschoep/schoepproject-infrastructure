@@ -8,6 +8,26 @@
       "Description": "Name of the domain that is requesting email verification",
       "Default": "schoepproject.com"
     },
+    "CodeRepositoryName": {
+      "Type": "String",
+      "Description": "Name of the container repository to be created for this stack.",
+      "Default": "sendEmailFromSchoepprojectFormData"
+    },
+    "RepositoryCICDName": {
+      "Type": "String",
+      "Description": "Name of the role and policy that will be allowed to upload to ECR",
+      "Default": "github-Ecr-Schoepproject-Backend-upload-role"
+    },
+    "LambdaCICDName": {
+      "Type": "String",
+      "Description": "Name of the role and policy that will be allowed to push images to lambda",
+      "Default": "github-Lambda-Schoepproject-Backend-push-role"
+    },
+    "RepositoryTemplateName": {
+      "Type": "String",
+      "Description": "Name of the template within this repo that should be used to generate all image repo infrastructure.",
+      "Default": "lambda.image.repository.json"
+    },
     "AuthorizeExecutionRoleName": {
       "Type": "String",
       "Description": "Name of the policy and service role that will be created for this function",
@@ -17,12 +37,40 @@
       "Type": "String",
       "Description": "Name of the function to be created to handle emailing form posts",
       "Default": "sendEmailFromSchoepprojectFormData"
+    },
+    "EmailToRecieveResponses": {
+      "Type": "String",
+      "Description": "Email address that this stack will grant Lambda permission to send emails to",
+      "Default": "joshua@schoepproject.com"
+    },
+    "LambdaCICDTemplateName": {
+      "Type": "String",
+      "Description": "Name of the template in this repo that should be used to generate CICD roles for Lambda.",
+      "Default": "lambda.upload.policy.json"
+    },
+    "GitRepository": {
+      "Type": "String",
+      "Description": "Name of the GitHub Repository that will be allowed to access resources",
+      "AllowedPattern": "^joshuadschoep/.*$"
+    },
+    "GitBranch": {
+      "Type": "String",
+      "Description": "Name of the GitHub Branch that will be allowed to access resources",
+      "Default": "main"
     }
   },
   "Mappings": {
     "Containers": {
       "DefaultGo": {
         "Uri": "145724753995.dkr.ecr.us-east-1.amazonaws.com/schoepproject-go-images:latest"
+      }
+    },
+    "TemplateURLs": {
+      "Common": {
+        "URL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/common"
+      },
+      "Deployed": {
+        "URL": "https://cloudformation-templates-145724753995-us-east-1.s3.amazonaws.com/deployed"
       }
     }
   },
@@ -41,7 +89,39 @@
         }
       }
     },
-    "ExecutionPolicy": {
+    "ImageRepository": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              {
+                "Fn::FindInMap": ["TemplateURLs", "Common", "URL"]
+              },
+              {
+                "Ref": "RepositoryTemplateName"
+              }
+            ]
+          ]
+        },
+        "Parameters": {
+          "CodeRepositoryName": {
+            "Ref": "CodeRepositoryName"
+          },
+          "RoleAndPolicyName": {
+            "Ref": "RepositoryCICDName"
+          },
+          "GitRepository": {
+            "Ref": "GitRepository"
+          },
+          "GitBranch": {
+            "Ref": "GitBranch"
+          }
+        }
+      }
+    },
+    "LambdaExecutionPolicy": {
       "Type": "AWS::IAM::ManagedPolicy",
       "Properties": {
         "Description": {
@@ -63,14 +143,16 @@
               ],
               "Resource": [
                 "arn:aws:ses:*:145724753995:template/*",
-                "arn:aws:ses:us-east-1:145724753995:identity/joshua@schoepproject.com"
+                {
+                  "Fn::Sub": "arn:aws:ses:us-east-1:145724753995:identity/${EmailToRecieveResponses}"
+                }
               ]
             }
           ]
         }
       }
     },
-    "ExecutionRole": {
+    "LambdaExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "Description": {
@@ -90,7 +172,7 @@
         },
         "ManagedPolicyArns": [
           {
-            "Ref": "ExecutionPolicy"
+            "Ref": "LambdaExecutionPolicy"
           }
         ]
       }
@@ -108,8 +190,89 @@
         },
         "PackageType": "Image",
         "Role": {
-          "Fn::GetAtt": ["ExecutionRole", "Arn"]
+          "Fn::GetAtt": ["LambdaExecutionRole", "Arn"]
         }
+      }
+    },
+    "LambdaCICDRole": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": {
+          "Fn::Join": [
+            "/",
+            [
+              {
+                "Fn::FindInMap": ["TemplateURLs", "Common", "URL"]
+              },
+              {
+                "Ref": "LambdaCICDTemplateName"
+              }
+            ]
+          ]
+        },
+        "Parameters": {
+          "RoleAndPolicyName": {
+            "Ref": "LambdaCICDName"
+          },
+          "LambdaARN": {
+            "Fn::GetAtt": ["FormSendFunction", "Arn"]
+          },
+          "Repository": {
+            "Ref": "GitRepository"
+          },
+          "Branch": {
+            "Ref": "GitBranch"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "EmailDomain": {
+      "Description": "Name of the SES Email Domain that was created for this stack.",
+      "Value": {
+        "Ref": "EmailDomain"
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-Email-Domain"
+        }
+      }
+    },
+    "ContainerRepositoryName": {
+      "Description": "Name of the ECR repository that was created",
+      "Value": {
+        "Fn::GetAtt": ["ImageRepository", "Outputs.RepositoryName"]
+      }
+    },
+    "ContainerRepositoryUri": {
+      "Description": "URI of the ECR repository that was created",
+      "Value": {
+        "Fn::GetAtt": ["ImageRepository", "Outputs.RepositoryUrl"]
+      }
+    },
+    "ECRUploadRoleArn": {
+      "Description": "ARN of the role that GitHub should use to upload to ECR",
+      "Value": {
+        "Fn::GetAtt": ["ImageRepository", "Outputs.UploadRoleArn"]
+      }
+    },
+    "LambdaName": {
+      "Description": "Name of the lambda function that was created",
+      "Value": {
+        "Ref": "FormSendFunction"
+      }
+    },
+    "LambdaArn": {
+      "Description": "ARN of the lambda function that was created",
+      "Value": {
+        "Fn::GetAtt": ["FormSendFunction", "Arn"]
+      }
+    },
+    "LambdaPushRoleArn": {
+      "Description": "Name of the role GitHub should use to push images to Lambda",
+      "Value": {
+        "Fn::GetAtt": ["LambdaCICDRole", "Outputs.GitHubPrincipalledRoleArn"]
       }
     }
   }
