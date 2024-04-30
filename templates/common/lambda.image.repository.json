@@ -5,7 +5,7 @@
     "CodeRepositoryName": {
       "Type": "String",
       "Description": "Name of the container repository to be created for this stack",
-      "AllowedPattern": "^.{1,127}$"
+      "AllowedPattern": "^(?=.{2,256}$)((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)$"
     },
     "RoleAndPolicyName": {
       "Type": "String",

@@ -11,7 +11,7 @@
     "CodeRepositoryName": {
       "Type": "String",
       "Description": "Name of the container repository to be created for this stack.",
-      "Default": "sendEmailFromSchoepprojectFormData"
+      "Default": "send-email-from-schoepproject-form-data-handler"
     },
     "RepositoryCICDName": {
       "Type": "String",
