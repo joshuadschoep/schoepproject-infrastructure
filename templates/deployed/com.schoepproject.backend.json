@@ -38,10 +38,10 @@
       "Description": "Name of the function to be created to handle emailing form posts",
       "Default": "sendEmailFromSchoepprojectFormData"
     },
-    "EmailToRecieveResponses": {
+    "DomainSendingEmails": {
       "Type": "String",
       "Description": "Email address that this stack will grant Lambda permission to send emails to",
-      "Default": "joshua@schoepproject.com"
+      "Default": "schoepproject.com"
     },
     "LambdaCICDTemplateName": {
       "Type": "String",
@@ -145,7 +145,7 @@
               "Resource": [
                 "arn:aws:ses:*:145724753995:template/*",
                 {
-                  "Fn::Sub": "arn:aws:ses:us-east-1:145724753995:identity/${EmailToRecieveResponses}"
+                  "Fn::Sub": "arn:aws:ses:us-east-1:145724753995:identity/${DomainSendingEmails}"
                 }
               ]
             }
