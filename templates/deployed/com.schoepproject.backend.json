@@ -8,6 +8,16 @@
       "Description": "Name of the domain that is requesting email verification",
       "Default": "schoepproject.com"
     },
+    "ApiName": {
+      "Type": "String",
+      "Description": "Name of the API Gateway instance that will be created",
+      "Default": "www-com-schoepproject-api"
+    },
+    "ApiMappingKey": {
+      "Type": "String",
+      "Description": "Name of the key that will be used to reach this API",
+      "Default": "/www"
+    },
     "CodeRepositoryName": {
       "Type": "String",
       "Description": "Name of the container repository to be created for this stack.",
@@ -87,6 +97,45 @@
         },
         "EmailIdentity": {
           "Ref": "EmailDomainName"
+        }
+      }
+    },
+    "Api": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Name": {
+          "Ref": "ApiName"
+        },
+        "ProtocolType": "HTTP",
+        "Target": {
+          "Fn::GetAtt": ["FormSendFunction", "Arn"]
+        },
+        "DisableExecuteApiEndpoint": true
+      }
+    },
+    "ApiStage": {
+      "Type": "AWS::ApiGatewayV2::Stage",
+      "Properties": {
+        "ApiId": {
+          "Ref": "Api"
+        },
+        "StageName": "PROD"
+      }
+    },
+    "ApiMapping": {
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+      "Properties": {
+        "ApiId": {
+          "Ref": "Api"
+        },
+        "ApiMappingKey": {
+          "Ref": "ApiMappingKey"
+        },
+        "DomainName": {
+          "Fn::ImportValue": "com-schoepproject-api-Domain-Name"
+        },
+        "Stage": {
+          "Ref": "ApiStage"
         }
       }
     },
