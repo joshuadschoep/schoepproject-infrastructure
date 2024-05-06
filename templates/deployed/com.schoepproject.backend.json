@@ -16,7 +16,7 @@
     "ApiMappingKey": {
       "Type": "String",
       "Description": "Name of the key that will be used to reach this API",
-      "Default": "/www"
+      "Default": "www"
     },
     "CodeRepositoryName": {
       "Type": "String",
