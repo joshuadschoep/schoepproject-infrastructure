@@ -16,3 +16,4 @@ jobs:
         run: |
           cfn-lint --version
           cfn-lint templates/**/*.json
+          cfn-lint templates/**/*.yml

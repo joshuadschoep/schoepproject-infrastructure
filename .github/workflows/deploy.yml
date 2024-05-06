@@ -58,6 +58,13 @@ jobs:
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+      - name: com-schoepproject-api
+        uses: aws-actions/aws-cloudformation-github-deploy@master
+        with:
+          name: com-schoepproject-api
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/gateway.schoepproject.yml
+          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+          no-fail-on-empty-changeset: "1"
       - name: com-schoepproject-backend
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
