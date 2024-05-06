@@ -26,3 +26,9 @@ Resources:
       DomainNameConfigurations:
         - CertificateArn: !Ref GatewayCertificate
           EndpointType: REGIONAL
+Outputs:
+  GatewayDomainName:
+    Description: Domain name for the created API
+    Value: !Ref GatewayDomain
+    Export:
+      Name: !Sub "${AWS::StackName}-Domain-Name"
