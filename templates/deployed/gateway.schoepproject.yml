@@ -18,8 +18,11 @@ Resources:
       DomainValidationOptions:
         - DomainName: !Ref DomainName
           HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
   GatewayDomain:
-    Type: AWS::ApiGateway::DomainName
+    Type: AWS::ApiGatewayV2::DomainName
     Properties:
-      CertificateArn: !Ref GatewayCertificate
       DomainName: !Ref DomainName
+      DomainNameConfigurations:
+        - CertificateArn: !Ref GatewayCertificate
+          EndpointType: REGIONAL
