@@ -81,7 +81,7 @@ Resources:
       ProtocolType: HTTP
       DisableExecuteApiEndpoint: true
       CorsConfiguration:
-        AllowCredenials: true
+        AllowCredentials: true
         AllowHeaders:
           - Accept
           - Content-Type
@@ -92,7 +92,8 @@ Resources:
           - HEAD
           - GET
           - POST
-        AllowOrigins: "*"
+        AllowOrigins:
+          - "*"
         ExposeHeaders:
           - Content-Type
           - Content-Length
