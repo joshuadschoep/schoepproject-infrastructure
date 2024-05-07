@@ -80,6 +80,22 @@ Resources:
       Name: !Ref ApiName
       ProtocolType: HTTP
       DisableExecuteApiEndpoint: true
+      CorsConfiguration:
+        AllowCredenials: true
+        AllowHeaders:
+          - Accept
+          - Content-Type
+          - Origin
+          - Referer
+          - User-Agent
+        AllowMethods:
+          - HEAD
+          - GET
+          - POST
+        AllowOrigins: "*"
+        ExposeHeaders:
+          - Content-Type
+          - Content-Length
   HandlerIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
