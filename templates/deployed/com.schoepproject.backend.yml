@@ -83,7 +83,7 @@ Resources:
   HandlerIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApidId: !Ref Api
+      ApiId: !Ref Api
       IntegrationType: AWS_PROXY
       IntegrationMethod: POST
       IntegrationUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FormSendFunction.Arn}/invocations"
