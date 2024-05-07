@@ -76,7 +76,7 @@ jobs:
       - name: com-schoepproject-homepage
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
-          name: com-schoepproject-dev
+          name: com-schoepproject-homepage
           template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.homepage.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
