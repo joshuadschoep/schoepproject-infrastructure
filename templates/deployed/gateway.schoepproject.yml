@@ -11,6 +11,13 @@ Parameters:
     Description: ID of the Hosted Zone that will contain DNS entries and validate the certificate
     Default: ZOZJO7VU8BJZE
 Resources:
+  GatewayRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref DomainName
+      AliasTarget:
+        DNSName: !GetAtt GatewayDomain.RegionalDomainName
+      HostedZoneId: !Ref HostedZoneId
   GatewayCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
