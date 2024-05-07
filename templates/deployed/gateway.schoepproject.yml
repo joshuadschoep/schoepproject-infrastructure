@@ -17,6 +17,7 @@ Resources:
       Name: !Ref DomainName
       AliasTarget:
         DNSName: !GetAtt GatewayDomain.RegionalDomainName
+        HostedZoneId: !GetAtt RegionalHostedZoneId
       HostedZoneId: !Ref HostedZoneId
   GatewayCertificate:
     Type: AWS::CertificateManager::Certificate
