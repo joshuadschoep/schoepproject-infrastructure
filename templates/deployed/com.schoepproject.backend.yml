@@ -84,6 +84,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref Api
+      PayloadFormatVersion: "2.0"
       IntegrationType: AWS_PROXY
       IntegrationMethod: POST
       IntegrationUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FormSendFunction.Arn}/invocations"
