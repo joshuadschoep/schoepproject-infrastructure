@@ -80,12 +80,19 @@ Resources:
       Name: !Ref ApiName
       ProtocolType: HTTP
       DisableExecuteApiEndpoint: true
+  HandlerIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApidId: !Ref Api
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FormSendFunction.Arn}/invocations"
   HandlerRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref Api
       RouteKey: POST /submit-form
-      Target: !GetAtt FormSendFunction.Arn
+      Target: !Join [/, [integrations, !Ref HandlerIntegration]]
   ApiStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
