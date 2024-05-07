@@ -75,13 +75,28 @@ Resources:
         NextSigningKeyLength: RSA_2048_BIT
       EmailIdentity: !Ref EmailDomainName
   Api:
-    Type: AWS::ApiGateway::RestApi
+    Type: AWS::ApiGatewayV2::Api
     Properties:
       Name: !Ref ApiName
+      ProtocolType: HTTP
       DisableExecuteApiEndpoint: true
-      EndpointConfiguration:
-        Types:
-          - REGIONAL
+      CorsConfiguration:
+        AllowCredentials: false
+        AllowHeaders:
+          - Accept
+          - Content-Type
+          - Origin
+          - Referer
+          - User-Agent
+        AllowMethods:
+          - HEAD
+          - GET
+          - POST
+        AllowOrigins:
+          - "*"
+        ExposeHeaders:
+          - Content-Type
+          - Content-Length
   HandlerIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
