@@ -15,6 +15,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       Name: !Ref DomainName
+      Type: A
       AliasTarget:
         DNSName: !GetAtt GatewayDomain.RegionalDomainName
         HostedZoneId: !GetAtt GatewayDomain.RegionalHostedZoneId
