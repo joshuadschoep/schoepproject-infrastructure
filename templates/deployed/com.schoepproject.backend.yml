@@ -87,7 +87,7 @@ Resources:
       ApiId:
         Ref: Api
       RouteKey: POST /submit-form
-      Target: !GetAtt
+      Target: !GetAtt:
         - FormSendFunction
           Arn
   ApiStage:
