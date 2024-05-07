@@ -85,7 +85,7 @@ Resources:
     Properties:
       ApiId: !Ref Api
       RouteKey: POST /submit-form
-      Target: !GetAtt: FormSendFunction.Arn
+      Target: !GetAtt FormSendFunction.Arn
   ApiStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
@@ -127,11 +127,11 @@ Resources:
               - ses:SendTemplatedEmail
             Resource:
               - arn:aws:ses:*:145724753995:template/*
-              - !Sub: "arn:aws:ses:us-east-1:145724753995:identity/${DomainSendingEmails}"
+              - !Sub "arn:aws:ses:us-east-1:145724753995:identity/${DomainSendingEmails}"
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      Description: !Fn::Sub "Role to allow ${EmailHandlerFunctionName} to access S3 objects"
+      Description: !Sub "Role to allow ${EmailHandlerFunctionName} to access S3 objects"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
