@@ -81,7 +81,7 @@ Resources:
       ProtocolType: HTTP
       DisableExecuteApiEndpoint: true
       CorsConfiguration:
-        AllowCredentials: true
+        AllowCredentials: false
         AllowHeaders:
           - Accept
           - Content-Type
