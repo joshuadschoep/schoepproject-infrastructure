@@ -69,18 +69,26 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-backend
-          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.backend.json
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.backend.yml
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-      - name: com-schoepproject-dev
+      - name: com-schoepproject-homepage
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
-          name: com-schoepproject-dev
-          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.dev.json
+          name: com-schoepproject-homepage
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.homepage.json
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+      # - name: com-schoepproject-dev
+      #   uses: aws-actions/aws-cloudformation-github-deploy@master
+      #   with:
+      #     name: com-schoepproject-dev
+      #     template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.dev.json
+      #     role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+      #     no-fail-on-empty-changeset: "1"
+      #     capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-authorize
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
