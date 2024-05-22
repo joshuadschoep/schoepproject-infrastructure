@@ -52,6 +52,12 @@
                   "Ref": "LambdaARN"
                 }
               ]
+            },
+            {
+              "Sid": "AllowSesTemplateChanging",
+              "Effect": "Allow",
+              "Action": ["ses:CreateTemplate", "ses:UpdateTemplate"],
+              "Resource": ["*"]
             }
           ]
         }
@@ -96,10 +102,7 @@
     "GitHubPrincipalledRoleArn": {
       "Description": "The name of the role for GitHub to assume when trying to perform CD actions",
       "Value": {
-        "Fn::GetAtt": [
-          "UploadAndInvokeRole",
-          "Arn"
-        ]
+        "Fn::GetAtt": ["UploadAndInvokeRole", "Arn"]
       }
     }
   }
