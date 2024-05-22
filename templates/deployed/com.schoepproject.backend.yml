@@ -74,55 +74,30 @@ Resources:
       DkimSigningAttributes:
         NextSigningKeyLength: RSA_2048_BIT
       EmailIdentity: !Ref EmailDomainName
+  Mapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: !Ref ApiMappingKey
+      DomainName: !ImportValue com-schoepproject-api-Domain-Name
+      RestApiId: !Ref Api
+      Stage: $default
   Api:
-    Type: AWS::ApiGatewayV2::Api
+    Type: AWS::ApiGateway::RestApi
     Properties:
       Name: !Ref ApiName
-      ProtocolType: HTTP
       DisableExecuteApiEndpoint: true
-      CorsConfiguration:
-        AllowCredentials: false
-        AllowHeaders:
-          - Accept
-          - Content-Type
-          - Origin
-          - Referer
-          - User-Agent
-        AllowMethods:
-          - HEAD
-          - GET
-          - POST
-        AllowOrigins:
-          - "*"
-        ExposeHeaders:
-          - Content-Type
-          - Content-Length
-  HandlerIntegration:
-    Type: AWS::ApiGatewayV2::Integration
+  SubmitResource:
+    Type: AWS::ApiGateway::Resource
     Properties:
-      ApiId: !Ref Api
-      PayloadFormatVersion: "2.0"
-      IntegrationType: AWS_PROXY
-      IntegrationMethod: POST
-      IntegrationUri: !Sub "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FormSendFunction.Arn}/invocations"
-  HandlerRoute:
-    Type: AWS::ApiGatewayV2::Route
+      ParentId: !GetAtt Api.RootResourceId
+      PathPart: submit-form
+      RestApiId: !Ref Api
+  SubmitMethod:
+    Type: AWS::ApiGateway::Method
     Properties:
-      ApiId: !Ref Api
-      RouteKey: POST /submit-form
-      Target: !Join [/, [integrations, !Ref HandlerIntegration]]
-  ApiStage:
-    Type: AWS::ApiGatewayV2::Stage
-    Properties:
-      ApiId: !Ref Api
-      StageName: PROD
-  ApiMapping:
-    Type: AWS::ApiGatewayV2::ApiMapping
-    Properties:
-      ApiId: !Ref Api
-      ApiMappingKey: !Ref ApiMappingKey
-      DomainName: !ImportValue com-schoepproject-api-Domain-Name
-      Stage: !Ref ApiStage
+      HttpMethod: POST
+      ResourceId: !Ref FormSendFunction
+      RestApiId: !Ref Api
   DemoLambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
