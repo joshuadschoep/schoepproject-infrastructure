@@ -79,9 +79,9 @@ Resources:
     Properties:
       BasePath: !Ref ApiMappingKey
       DomainName: !ImportValue com-schoepproject-api-Domain-Name
-      RestApiId: !Ref Api
+      RestApiId: !Ref RestApi
       Stage: $default
-  Api:
+  RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Name: !Ref ApiName
@@ -91,13 +91,13 @@ Resources:
     Properties:
       ParentId: !GetAtt Api.RootResourceId
       PathPart: submit-form
-      RestApiId: !Ref Api
+      RestApiId: !Ref RestApi
   SubmitMethod:
     Type: AWS::ApiGateway::Method
     Properties:
       HttpMethod: POST
       ResourceId: !Ref FormSendFunction
-      RestApiId: !Ref Api
+      RestApiId: !Ref RestApi
   DemoLambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
