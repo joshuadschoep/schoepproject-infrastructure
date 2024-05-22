@@ -96,8 +96,13 @@ Resources:
     Properties:
       HttpMethod: POST
       AuthorizationType: NONE
-      ResourceId: !Ref FormSendFunction
+      ResourceId: !Ref SubmitResource
       RestApiId: !Ref RestApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationMethod: POST
+        Uri: !Sub >-
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FormSendFunction.Arn}/invocations
   DemoLambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
