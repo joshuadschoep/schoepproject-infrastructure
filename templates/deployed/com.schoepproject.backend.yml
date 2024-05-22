@@ -95,6 +95,7 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       HttpMethod: POST
+      AuthorizationType: NONE
       ResourceId: !Ref FormSendFunction
       RestApiId: !Ref RestApi
   DemoLambdaInvokePermission:
