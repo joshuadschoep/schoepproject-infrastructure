@@ -100,7 +100,7 @@ Resources:
       RestApiId: !Ref RestApi
       Integration:
         Type: AWS_PROXY
-        IntegrationMethod: POST
+        IntegrationHttpMethod: POST
         Uri: !Sub >-
           arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FormSendFunction.Arn}/invocations
   DemoLambdaInvokePermission:
