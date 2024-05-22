@@ -80,7 +80,6 @@ Resources:
       BasePath: !Ref ApiMappingKey
       DomainName: !ImportValue com-schoepproject-api-Domain-Name
       RestApiId: !Ref RestApi
-      Stage: $default
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
