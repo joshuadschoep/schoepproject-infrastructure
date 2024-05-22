@@ -10,7 +10,7 @@ Parameters:
   ApiName:
     Type: String
     Description: Name of the API Gateway instance that will be created
-    Default: www-com-schoepproject-api
+    Default: www-com-schoepproject-rest-api
   ApiMappingKey:
     Type: String
     Description: Name of the key that will be used to reach this API
@@ -89,7 +89,7 @@ Resources:
   SubmitResource:
     Type: AWS::ApiGateway::Resource
     Properties:
-      ParentId: !GetAtt Api.RootResourceId
+      ParentId: !GetAtt RestApi.RootResourceId
       PathPart: submit-form
       RestApiId: !Ref RestApi
   SubmitMethod:
