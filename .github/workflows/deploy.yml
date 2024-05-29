@@ -51,6 +51,7 @@ jobs:
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: default-go-image-cicd-roles
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: default-go-image-cicd-roles
@@ -59,6 +60,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-api
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-api
@@ -66,6 +68,7 @@ jobs:
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
       - name: com-schoepproject-backend
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-backend
@@ -73,14 +76,15 @@ jobs:
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
-      # - name: com-schoepproject-homepage
-      #   uses: aws-actions/aws-cloudformation-github-deploy@master
-      #   with:
-      #     name: com-schoepproject-homepage
-      #     template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.homepage.json
-      #     role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-      #     no-fail-on-empty-changeset: "1"
-      #     capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+      - name: com-schoepproject-homepage
+        if: "!cancelled()"
+        uses: aws-actions/aws-cloudformation-github-deploy@master
+        with:
+          name: com-schoepproject-homepage
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.homepage.json
+          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       # - name: com-schoepproject-dev
       #   uses: aws-actions/aws-cloudformation-github-deploy@master
       #   with:
@@ -90,6 +94,7 @@ jobs:
       #     no-fail-on-empty-changeset: "1"
       #     capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-authorize
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-authorize
@@ -98,6 +103,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-www
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-www
@@ -106,6 +112,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-assets
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-assets
@@ -114,6 +121,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM
       - name: com-schoepproject-blog
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-payout
@@ -122,6 +130,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-payout
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-payout
@@ -135,6 +144,7 @@ jobs:
             BucketNameSuffix=payout,
             CICDRoleName=payout-schoepproject-com-cd
       - name: com-schoepproject-snowfall
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: com-schoepproject-snowfall
@@ -148,6 +158,7 @@ jobs:
             BucketNameSuffix=snowfall,
             CICDRoleName=snowfall-schoepproject-com-cd
       - name: logging-bucket
+        if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
         with:
           name: logging-bucket
