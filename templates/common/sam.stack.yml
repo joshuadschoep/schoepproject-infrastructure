@@ -65,7 +65,7 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Federated: !FindInMap ["OidcAccess", "GitHub", "Principal"]
+              Federated: arn:aws:iam::891377232169:oidc-provider/token.actions.githubusercontent.com
             Action: sts:AssumeRoleWithWebIdentity,
             Condition:
               StringEquals:
