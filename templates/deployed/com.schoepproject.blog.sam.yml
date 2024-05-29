@@ -5,7 +5,7 @@ Parameters:
     Type: String
     Description: Bucket that should be created to hold SAM resources
     Default: com-schoepproject-blog-sam
-  CICDPolicyPrefix:
+  CicdPolicyPrefix:
     Type: String
     Description: Prefix that should be given to the allocated policy and role for CICD -- ends in -role or -policy
     Default: github-Blog-Schoepproject
@@ -43,7 +43,7 @@ Resources:
         !Join [/, [!FindInMap [Templates, Common, Url], !Ref SamTemplateName]]
       Parameters:
         BucketName: !Ref BucketName
-        CICDPolicyPrefix: !Ref CICDPolicyPrefix
+        CicdPolicyPrefix: !Ref CicdPolicyPrefix
         AssumedPolicyPrefix: !Ref AssumedPolicyPrefix
         RepositoryOrganization: !Ref RepositoryOrganization
         RepositoryName: !Ref RepositoryName
