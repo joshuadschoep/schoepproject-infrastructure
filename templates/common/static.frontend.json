@@ -46,7 +46,13 @@
       "Properties": {
         "BucketName": {
           "Ref": "BucketName"
-        }
+        },
+        "Tags": [
+          {
+            "Key": "aws_s3_info",
+            "Value": ""
+          }
+        ]
       }
     },
     "CDNOriginAccessControl": {
@@ -105,7 +111,13 @@
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only"
           }
-        }
+        },
+        "Tags": [
+          {
+            "Key": "aws_cloudfront_info",
+            "Value": ""
+          }
+        ]
       }
     },
     "StaticFileBucketPolicy": {
