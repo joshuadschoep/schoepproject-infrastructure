@@ -50,6 +50,15 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: ${{ secrets.AWS_MODIFY_STACK_SESSION_NAME}}
           aws-region: ${{ secrets.AWS_REGION }}
+      - name: com-schoepproject-blog
+        if: "!cancelled()"
+        uses: aws-actions/aws-cloudformation-github-deploy@master
+        with:
+          name: com-schoepproject-blog
+          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.blog.sam.yml
+          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: default-go-image-cicd-roles
         if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
@@ -120,15 +129,6 @@ jobs:
           role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_IAM
-      - name: com-schoepproject-blog
-        if: "!cancelled()"
-        uses: aws-actions/aws-cloudformation-github-deploy@master
-        with:
-          name: com-schoepproject-payout
-          template: ${{ secrets.DEPLOYED_TEMPLATES_URL }}/com.schoepproject.blog.sam.yml
-          role-arn: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          no-fail-on-empty-changeset: "1"
-          capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
       - name: com-schoepproject-payout
         if: "!cancelled()"
         uses: aws-actions/aws-cloudformation-github-deploy@master
