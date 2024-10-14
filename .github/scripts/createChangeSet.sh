@@ -11,7 +11,7 @@
 # CHANGESET_NAME Label for this changeset
 # CHANGESET_DESCRIPTION Description of this changeset
 # CHANGESET_ROLE Role to use while creating this changeset
-# TAGS key=value, list of tags to attach to changesets
+# TAGS Key=key,Value=value  list of tags to attach to changesets
 echo "Checking for existence of stack ${STACK_NAME}."
 aws cloudformation describe-stacks --stack-name $STACK_NAME > /dev/null 2>&1
 result=$?;
