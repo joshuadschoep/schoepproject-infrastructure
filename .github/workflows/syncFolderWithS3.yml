@@ -31,7 +31,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ inputs.AWS_REGION }}
       - run: ls -al .github
-      - run: ${{ github.action_path }}.github/scripts/syncFolderWithS3.sh
+      - run: bash ./.github/scripts/syncFolderWithS3.sh
         id: upload
         env:
           AWS_S3_BUCKET: ${{ inputs.AWS_S3_BUCKET }}
