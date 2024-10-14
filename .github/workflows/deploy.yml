@@ -6,6 +6,8 @@ on:
 jobs:
   upload:
     uses: joshuadschoep/schoepproject-actions/.github/workflows/syncFolderWithS3.yml@v1
+    permissions:
+      id-token: write
     strategy:
       matrix:
         directory: [root]
@@ -18,6 +20,8 @@ jobs:
   deploy:
     needs: upload
     uses: joshuadschoep/schoepproject-actions/.github/workflows/createChangeSet.yml@v1
+    permissions:
+      id-token: write
     strategy:
       matrix:
         template:
