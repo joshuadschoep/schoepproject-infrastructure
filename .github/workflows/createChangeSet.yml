@@ -60,3 +60,4 @@ jobs:
           CHANGESET_NAME: ${{ inputs.CHANGESET_NAME }}
           CHANGESET_DESCRIPTION: ${{ inputs.CHANGESET_DESCRIPTION }}
           CHANGESET_ROLE: ${{ inputs.CHANGESET_ROLE }}
+          CHANGESET_TAGS: ${{ inputs.CHANGESET_TAGS }}
