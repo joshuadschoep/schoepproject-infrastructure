@@ -27,6 +27,14 @@ else
 fi
 
 echo "Creating changeset ${CHANGESET_NAME} for stack ${STACK_NAME}"
+echo "aws cloudformation create-change-set \
+  --stack-name $STACK_NAME \
+  --template-url $TEMPLATE_URL \
+  --change-set-type $CHANGESET_TYPE \
+  --change-set-name $CHANGESET_NAME \
+  --role-arn $CHANGESET_ROLE \
+  --description $CHANGESET_DESCRIPTION \
+  --output json"
 
 CHANGESET=$(aws cloudformation create-change-set \
   --stack-name $STACK_NAME \
