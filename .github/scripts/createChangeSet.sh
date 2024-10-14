@@ -26,6 +26,8 @@ else
   exit 1;
 fi
 
+echo "Creating changeset ${CHANGESET_NAME} for stack ${STACK_NAME}"
+
 CHANGESET=$(aws cloudformation create-change-set \
   --stack-name $STACK_NAME \
   --template-url $TEMPLATE_URL \

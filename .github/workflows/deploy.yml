@@ -33,7 +33,7 @@ jobs:
             bucketUrl: https://https://schoepproject-infrastructure-templates-145724753995.s3.amazonaws.com
     with:
       AWS_REGION: ${{ vars.AWS_REGION }}
-      CHANGESET_NAME: ${{ matrix.name }}-CI-Changes-${{ github.sha }}
+      CHANGESET_NAME: "${{ matrix.name }}-CI-Changes-${{ github.sha }}"
       CHANGESET_DESCRIPTION: "Changes from commit ${{ github.sha }}"
       CHANGESET_ROLE: ${{ vars.AWS_ROLE_TO_ASSUME }}
       STACK_NAME: ${{ matrix.name }}
