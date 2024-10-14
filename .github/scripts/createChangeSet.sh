@@ -45,7 +45,7 @@ CHANGESET=$(aws cloudformation create-change-set \
   --change-set-name $CHANGESET_NAME \
   --role-arn $CHANGESET_ROLE \
   --description "${CHANGESET_DESCRIPTION}" \
-  --tags "${CHANGESET_TAGS}" \
+  --tags $CHANGESET_TAGS \
   --output json)
 
 if [ $? -ne 0 ]; then
