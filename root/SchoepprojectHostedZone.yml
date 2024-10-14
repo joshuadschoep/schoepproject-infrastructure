@@ -9,6 +9,13 @@ Resources:
     Type: AWS::Route53::HostedZone
     Properties:
       Name: !Ref DomainName
+      HostedZoneTags:
+        - Key: schoepproject:group
+          Value: infrastructure
+        - Key: schoepproject:subgroup
+          Value: dns
+        - Key: schoepproject:layer
+          Value: root
 Outputs:
   HostedZoneID:
     Value: !Ref SchoepprojectHostedZone

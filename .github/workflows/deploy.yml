@@ -31,11 +31,13 @@ jobs:
           - template: root/SchoepprojectHostedZone.yml
             name: SchoepprojectHostedZone
             bucketUrl: https://https://schoepproject-infrastructure-templates-145724753995.s3.amazonaws.com
+            tags: schoepproject:group=infrastructure,schoepproject:subgroup=iac,schoepproject:layer=root
     with:
       AWS_REGION: ${{ vars.AWS_REGION }}
       CHANGESET_NAME: "${{ matrix.name }}-CI-Changes-${{ github.sha }}"
       CHANGESET_DESCRIPTION: "Changes from commit ${{ github.sha }}"
       CHANGESET_ROLE: ${{ vars.AWS_ROLE_TO_ASSUME }}
+      CHANGESET_TAGS: ${{ matrix.tags }}
       STACK_NAME: ${{ matrix.name }}
       TEMPLATE_URL: ${{ matrix.bucketUrl }}/${{ matrix.template }}
     secrets:

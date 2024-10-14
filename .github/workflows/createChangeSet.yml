@@ -20,6 +20,9 @@ on:
       CHANGESET_ROLE:
         required: true
         type: string
+      CHANGESET_TAGS:
+        required: true
+        type: string
     secrets:
       AWS_ROLE_TO_ASSUME:
         required: true
