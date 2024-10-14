@@ -50,7 +50,6 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ inputs.AWS_REGION }}
-      - run: ls -al
       - run: bash ./.github/scripts/createChangeSet.sh
         id: createChangeSet
         env:
@@ -61,3 +60,5 @@ jobs:
           CHANGESET_DESCRIPTION: ${{ inputs.CHANGESET_DESCRIPTION }}
           CHANGESET_ROLE: ${{ inputs.CHANGESET_ROLE }}
           CHANGESET_TAGS: ${{ inputs.CHANGESET_TAGS }}
+      - name: Review Changes
+        run: echo "Review change at ${{ steps.createChangeSet.outputs.CHANGESET_URL }}"
