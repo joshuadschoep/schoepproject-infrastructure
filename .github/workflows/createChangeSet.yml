@@ -63,4 +63,4 @@ jobs:
       - name: Echo review link
         run: |
           echo "#### Review and deploy here" >> $GITHUB_STEP_SUMMARY
-          echo "[${{ steps.createChangeSet.outputs.CHANGESET_ID }}](${{ steps.createChangeSet.outputs.CHANGESET_URL}})" >> $GITHUB_STEP_SUMMARY
+          echo "[${{ steps.createChangeSet.outputs.STACK_ID }}](${{ steps.createChangeSet.outputs.CHANGESET_URL}})" >> $GITHUB_STEP_SUMMARY
