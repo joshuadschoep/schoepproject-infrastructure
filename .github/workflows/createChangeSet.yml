@@ -60,5 +60,7 @@ jobs:
           CHANGESET_DESCRIPTION: ${{ inputs.CHANGESET_DESCRIPTION }}
           CHANGESET_ROLE: ${{ inputs.CHANGESET_ROLE }}
           CHANGESET_TAGS: ${{ inputs.CHANGESET_TAGS }}
-      - name: Review Changes
-        run: echo "Review change at ${{ steps.createChangeSet.outputs.CHANGESET_URL }}"
+      - name: Echo review link
+        run: |
+          echo "#### Review and deploy here" >> $GITHUB_STEP_SUMMARY
+          echo "[${{ steps.createChangeSet.outputs.CHANGESET_ID }}](${{ steps.createChangeSet.outputs.CHANGESET_URL}})" >> $GITHUB_STEP_SUMMARY
