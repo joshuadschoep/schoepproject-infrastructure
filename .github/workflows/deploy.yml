@@ -5,7 +5,7 @@ on:
 
 jobs:
   upload:
-    uses: joshuadschoep/schoepproject-actions/.github/workflows/syncFolderWithS3.yml@b62d559
+    uses: joshuadschoep/schoepproject-actions/.github/workflows/syncFolderWithS3.yml@b62d559243c50bf83fb3c39a2356f37e1ed5d41f
     permissions:
       id-token: write
     strategy:
@@ -19,7 +19,7 @@ jobs:
       AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_UPLOAD_ROLE }}
   deploy:
     needs: upload
-    uses: joshuadschoep/schoepproject-actions/.github/workflows/createChangeSet.yml@b62d559
+    uses: joshuadschoep/schoepproject-actions/.github/workflows/createChangeSet.yml@b62d559243c50bf83fb3c39a2356f37e1ed5d41f
     permissions:
       id-token: write
     strategy:
