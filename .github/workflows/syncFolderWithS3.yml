@@ -1,0 +1,38 @@
+name: Sync folder with S3
+on:
+  workflow_call:
+    inputs:
+      AWS_REGION:
+        required: true
+        type: string
+      AWS_S3_BUCKET:
+        required: true
+        type: string
+      AWS_S3_DIRECTORY:
+        required: true
+        type: string
+    secrets:
+      AWS_ROLE_TO_ASSUME:
+        required: true
+    outputs:
+      S3_URL:
+        description: https URL of the s3 folder that was synced
+        value: ${{ jobs.upload.outputs.S3_URL }}
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    outputs:
+      S3_URL: ${{ steps.upload.outputs.S3_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.AWS_REGION }}
+      - run: ls -al .github
+      - run: ${{ github.action_path }}.github/scripts/syncFolderWithS3.sh
+        id: upload
+        env:
+          AWS_S3_BUCKET: ${{ inputs.AWS_S3_BUCKET }}
+          AWS_S3_DIRECTORY: ${{ inputs.AWS_S3_DIRECTORY }}

@@ -1,0 +1,59 @@
+name: Create Change Set
+on:
+  workflow_call:
+    inputs:
+      AWS_REGION:
+        required: true
+        type: string
+      STACK_NAME:
+        required: true
+        type: string
+      TEMPLATE_URL:
+        required: true
+        type: string
+      CHANGESET_NAME:
+        required: true
+        type: string
+      CHANGESET_DESCRIPTION:
+        required: true
+        type: string
+      CHANGESET_ROLE:
+        required: true
+        type: string
+    secrets:
+      AWS_ROLE_TO_ASSUME:
+        required: true
+    outputs:
+      STACK_ID:
+        description: ARN of the stack that was either created or updated
+        value: ${{ jobs.changeset.outputs.STACK_ID }}
+      CHANGESET_ID:
+        description: ARN of the changeset that was created
+        value: ${{ jobs.changeset.outputs.CHANGESET_ID }}
+      CHANGESET_URL:
+        description: URL to use to approve/execute the changeset
+        value: ${{ jobs.changeset.outputs.CHANGESET_URL }}
+
+jobs:
+  changeset:
+    runs-on: ubuntu-latest
+    outputs:
+      STACK_ID: ${{ steps.createChangeSet.outputs.STACK_ID }}
+      CHANGESET_ID: ${{ steps.createChangeSet.outputs.CHANGESET_ID }}
+      CHANGESET_URL: ${{ steps.createChangeSet.outputs.CHANGESET_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.AWS_REGION }}
+      - run: ls -al
+      - run: ${{ github.action_path }}.github/scripts/createChangeSet.sh
+        id: createChangeSet
+        env:
+          AWS_REGION: ${{ inputs.AWS_REGION }}
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          TEMPLATE_URL: ${{ inputs.TEMPLATE_URL }}
+          CHANGESET_NAME: ${{ inputs.CHANGESET_NAME }}
+          CHANGESET_DESCRIPTION: ${{ inputs.CHANGESET_DESCRIPTION }}
+          CHANGESET_ROLE: ${{ inputs.CHANGESET_ROLE }}
