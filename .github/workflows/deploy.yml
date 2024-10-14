@@ -31,7 +31,7 @@ jobs:
           - template: root/SchoepprojectHostedZone.yml
             name: SchoepprojectHostedZone
             bucketUrl: https://https://schoepproject-infrastructure-templates-145724753995.s3.amazonaws.com
-            tags: "Key=schoepproject:group,Value=infrastructure Key=schoepproject:subgroup,Value=iac Key=schoepproject:layer,Value=root"
+            tags: 'Key="schoepproject:group",Value="infrastructure" Key="schoepproject:subgroup",Value="iac" Key="schoepproject:layer",Value="root"'
     with:
       AWS_REGION: ${{ vars.AWS_REGION }}
       CHANGESET_NAME: "${{ matrix.name }}-CI-Changes-${{ github.sha }}"
