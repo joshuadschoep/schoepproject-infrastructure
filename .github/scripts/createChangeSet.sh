@@ -34,7 +34,8 @@ echo "aws cloudformation create-change-set \
   --change-set-type $CHANGESET_TYPE \
   --change-set-name $CHANGESET_NAME \
   --role-arn $CHANGESET_ROLE \
-  --description $CHANGESET_DESCRIPTION \
+  --description "${CHANGESET_DESCRIPTION}" \
+  --tags "${TAGS}" \
   --output json"
 
 CHANGESET=$(aws cloudformation create-change-set \
