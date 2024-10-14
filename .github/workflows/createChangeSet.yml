@@ -48,7 +48,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ inputs.AWS_REGION }}
       - run: ls -al
-      - run: ${{ github.action_path }}.github/scripts/createChangeSet.sh
+      - run: bash ./.github/scripts/createChangeSet.sh
         id: createChangeSet
         env:
           AWS_REGION: ${{ inputs.AWS_REGION }}

@@ -15,6 +15,7 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION }}
       AWS_S3_BUCKET: ${{ vars.AWS_UPLOAD_BUCKET }}
       AWS_S3_DIRECTORY: ${{ matrix.directory }}
+      LOCAL_DIRECTORY: ${{ matrix.directory }}
     secrets:
       AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_UPLOAD_ROLE }}
   deploy:
