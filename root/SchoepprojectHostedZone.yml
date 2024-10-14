@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Test Hosted Zone with one resource for testing CI changes
+Parameters:
+  DomainName:
+    Type: String
+    Default: schoepproject.com.
+Resources:
+  SchoepprojectHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
+Outputs:
+  HostedZoneID:
+    Value: !Ref SchoepprojectHostedZone
+    Export:
+      Name: SchoepprojectHostedZoneID

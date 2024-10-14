@@ -1,4 +1,4 @@
-name: Lint
+name: CI - Lint
 on:
   push:
     branches-ignore: main
@@ -16,4 +16,3 @@ jobs:
         run: |
           cfn-lint --version
           cfn-lint templates/**/*.yml
-          cfn-lint templates/**/*.json
