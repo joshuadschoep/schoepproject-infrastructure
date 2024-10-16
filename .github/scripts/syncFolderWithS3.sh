@@ -7,7 +7,7 @@
 # AWS_S3_BUCKET
 # AWS_S3_DIRECTORY
 echo "Syncing files from $LOCAL_DIRECTORY to $AWS_S3_BUCKET/$AWS_S3_DIRECTORY.";
-aws s3 sync $LOCAL_DIRECTORY s3://$AWS_S3_BUCKET/$AWS_S3_DIRECTORY --output table --delete
+aws s3 sync $LOCAL_DIRECTORY s3://$AWS_S3_BUCKET/$AWS_S3_DIRECTORY --output table
 if [ $? -ne 0 ]; then
   echo "An error occured while syncing: $?. Exiting."
   exit 1
