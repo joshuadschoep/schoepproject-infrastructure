@@ -162,3 +162,10 @@ Resources:
               - iam:PassRole
             Resource:
               - !GetAtt CloudformationAssumedRole.Arn
+Outputs:
+  TemplateUploadRoleArn:
+    Value: !GetAtt TemplateUploadRole.Arn
+  CloudformationAssumedRoleArn:
+    Value: !GetAtt CloudformationAssumedRole.Arn
+  CloudformationDeployRoleArn:
+    Value: !GetAtt CloudformationDeployRole.Arn
