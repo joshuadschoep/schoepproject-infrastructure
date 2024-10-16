@@ -98,9 +98,9 @@ Resources:
               - route53:ChangeResourceRecordSets
               - route53:ListResourceRecordSets
             Resource:
-              - !Sub:
-                - arn:aws:route53:::hostedzone/${hostedzone}
-                - hostedzone: !ImportValue SchoepprojectHostedZoneID
+              - Fn::Sub:
+                  - arn:aws:route53:::hostedzone/${hostedzone}
+                  - hostedzone: !ImportValue SchoepprojectHostedZoneID
             Condition:
               ForAllValues:StringEquals:
                 route53:ChangeResourceRecordSetsNormalizedRecordNames:
