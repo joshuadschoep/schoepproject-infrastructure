@@ -81,6 +81,7 @@ Resources:
               - iam:CreateServiceLinkRole
               - iam:DeleteServiceLinkedRole
               - iam:PutRolePermissionsBoundary
+            Resource: "*"
             Condition:
               StringEquals:
                 iam:PermissionsBoundary: arn:aws:iam::145724753995:policy/schoepproject-general-permissions-boundary
@@ -99,7 +100,7 @@ Resources:
               - route53:ListResourceRecordSets
             Resource:
               - Fn::Sub:
-                  - arn:aws:route53:::hostedzone/${hostedzone}
+                  - "arn:aws:route53:::hostedzone/${hostedzone}"
                   - hostedzone: !ImportValue SchoepprojectHostedZoneID
             Condition:
               ForAllValues:StringEquals:
@@ -160,4 +161,4 @@ Resources:
             Action:
               - iam:PassRole
             Resource:
-              - !Ref CloudformationAssumedRole
+              - !GetAtt CloudformationAssumedRole.Arn
