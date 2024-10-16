@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CICD roles and policies for the schoepproject-com repository
+Parameters:
+  RepositoryOrganization:
+    Type: String
+    Default: joshuadschoep
+  RepositoryName:
+    Type: String
+    Default: schoepproject-com
+  ApplicationTag:
+    Type: String
+    Default: schoepproject.com
+  S3Arn:
+    Type: String
+    Default: arn:aws:s3:::schoepproject-infrastructure-templates-145724753995
+  AllowedPath:
+    Type: String
+    Default: applications/com
+Resources:
+  TemplateUploadPolicy:
+    Type: AWS::IAM::RolePolicy
+    Properties:
+      RoleName: schoepproject-com-s3-access
+      PolicyName: schoepproject-com-upload-to-s3
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource:
+              - !Ref S3Arn
+            Condition:
+              StringLike:
+                s3:prefix: !Sub "${AllowedPath}/*"
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:AbortMultipartUpload
+              - s3:ListMultipartUploadParts
+              - s3:GetObject
+              - s3:DeleteObject
+            Resource:
+              - !Sub "${S3Arn}/${AllowedPath}/*"

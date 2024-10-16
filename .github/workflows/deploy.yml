@@ -32,6 +32,10 @@ jobs:
             name: SchoepprojectHostedZone
             bucketUrl: https://schoepproject-infrastructure-templates-145724753995.s3.amazonaws.com
             tags: 'Key="schoepproject:group",Value="infrastructure" Key="schoepproject:subgroup",Value="dns" Key="schoepproject:layer",Value="root"'
+          - template: applications/SchoepprojectComCicd.yml
+            name: SchoepprojectComCicd
+            bucketUrl: https://schoepproject-infrastructure-templates-145724753995.s3.amazonaws.com
+            tags: 'Key="schoepproject:group",Value="applications" Key="schoepproject:subgroup",Value="com" Key="schoepproject:layer",Value="application"'
     with:
       AWS_REGION: ${{ vars.AWS_REGION }}
       CHANGESET_NAME: "${{ matrix.name }}-CI-Changes-${{ github.sha }}"
