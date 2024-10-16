@@ -7,9 +7,6 @@ Parameters:
   RepositoryName:
     Type: String
     Default: schoepproject-com
-  ApplicationTag:
-    Type: String
-    Default: schoepproject.com
   S3Arn:
     Type: String
     Default: arn:aws:s3:::schoepproject-infrastructure-templates-145724753995
@@ -17,10 +14,25 @@ Parameters:
     Type: String
     Default: applications/com
 Resources:
+  TemplateUploadRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: schoepproject-com-s3-access
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: arn:aws:iam::145724753995:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:sub: !Sub repo:${RepositoryOrganization}/${RepositoryName}:ref:refs/heads/main
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
   TemplateUploadPolicy:
     Type: AWS::IAM::RolePolicy
     Properties:
-      RoleName: schoepproject-com-s3-access
+      RoleName: !Ref TemplateUploadRole
       PolicyName: schoepproject-com-upload-to-s3
       PolicyDocument:
         Version: "2012-10-17"
@@ -42,3 +54,110 @@ Resources:
               - s3:DeleteObject
             Resource:
               - !Sub "${S3Arn}/${AllowedPath}/*"
+  CloudformationAssumedRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: schoepproject-com-cloudformation-assumed-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: cloudformation.amazonaws.com
+          Action: sts:AssumeRole
+  CloudformationAssumedPolicy:
+    Type: AWS::IAM::RolePolicy
+    Properties:
+      RoleName: !Ref CloudformationAssumedRole
+      PolicyName: schoepproject-com-deploy-resources
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - iam:GetRole
+              - iam:GetPolicy
+              - iam:GetRolePolicy
+              - iam:CreateServiceLinkRole
+              - iam:DeleteServiceLinkedRole
+              - iam:PutRolePermissionsBoundary
+            Condition:
+              StringEquals:
+                iam:PermissionsBoundary: arn:aws:iam::145724753995:policy/schoepproject-general-permissions-boundary
+          - Effect: Allow
+            Action:
+              - s3:*
+              - cloudfront:*
+              - apigateway:*
+              - apigatewayv2:*
+              - lambda:*
+              - ses:*
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - route53:ChangeResourceRecordSets
+              - route53:ListResourceRecordSets
+            Resource:
+              - !Sub:
+                - "arn:aws:route53:::hostedzone/${hostedzone}"
+                - hostedzone: !ImportValue SchoepprojectHostedZoneID
+            Condition:
+              ForAllValues:StringEquals:
+                route53:ChangeResourceRecordSetsNormalizedRecordNames:
+                  ["schoepproject.com", "www.schoepproject.com"]
+  CloudformationDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: schoepproject-com-cloudformation-access
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: arn:aws:iam::145724753995:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:sub: !Sub repo:${RepositoryOrganization}/${RepositoryName}:ref:refs/heads/main
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+  CloudformationDeployPolicy:
+    Type: AWS::IAM::RolePolicy
+    Properties:
+      RoleName: !Ref CloudformationDeployRole
+      PolicyName: schoepproject-com-deploy-to-cloudformation
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource:
+              - !Ref S3Arn
+            Condition:
+              StringLike:
+                s3:prefix: !Sub "${AllowedPath}/*"
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub "${S3Arn}/${AllowedPath}/*"
+          - Effect: Allow
+            Action:
+              - cloudformation:CreateStack,
+              - cloudformation:CreateChangeSet
+              - cloudformation:DescribeChangeSet
+              - cloudformation:DeleteChangeSet
+              - cloudformation:ListChangeSets
+              - cloudformation:DescribeStacks
+            Resource:
+              - arn:aws:cloudformation:*:145724753995:stack/*/*
+            Condition:
+              StringEquals:
+                aws:RequestTag/schoepproject:group: applications
+                aws:RequestTag/schoepproject:subgroup: com
+                aws:RequestTag/schoepproject:layer: application
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - !Ref CloudformationAssumedRole
