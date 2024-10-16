@@ -44,6 +44,7 @@ CHANGESET=$(aws cloudformation create-change-set \
   --change-set-type $CHANGESET_TYPE \
   --change-set-name $CHANGESET_NAME \
   --role-arn $CHANGESET_ROLE \
+  --capabiltiies "CAPABILITY_IAM,CAPABILITY_NAMED_IAM" \
   --description "${CHANGESET_DESCRIPTION}" \
   --tags $CHANGESET_TAGS \
   --output json)
